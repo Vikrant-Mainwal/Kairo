@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+@theme {
+  --color-kairo-50: #f5f7ff;
+  --color-kairo-100: #e0e7ff;
+  --color-kairo-200: #c7d2fe;
+  --color-kairo-300: #a5b4fc;
+  --color-kairo-400: #818cf8;
+  --color-kairo-500: #6366f1;
+  --color-kairo-600: #4f46e5;
+  --color-kairo-700: #4338ca;
+  --color-kairo-800: #3730a3;
+  --color-kairo-900: #312e81;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-neutral-950 text-neutral-100 antialiased;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-kairo-400;
+  }
+
+  ::selection {
+    @apply bg-kairo-500/30 text-white;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-neutral-700 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-neutral-600;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-kairo-400 to-violet-400 bg-clip-text text-transparent;
+  }
+  .glass {
+    @apply bg-white/[0.03] backdrop-blur-sm border border-white/[0.08];
+  }
+  .glass-hover {
+    @apply hover:bg-white/[0.06] transition-colors duration-150;
+  }
+}
+
