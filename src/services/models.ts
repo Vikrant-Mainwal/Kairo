@@ -28,5 +28,8 @@ export const SAMPLE_PROMPTS = [
   'Describe the butterfly effect and give a concrete example.',
 ]
 
-export const DEFAULT_SYSTEM_PROMPT =
-  'You are a helpful, concise AI assistant. Provide clear and accurate responses.'
+export const SAMPLE_SYSTEM_PROMPTS = [
+  'You are a helpful, concise AI assistant. Provide clear and accurate responses.',
+  'You are a creative writing assistant. Help users craft engaging stories and poems.',
+  'You are a code review assistant. Provide constructive feedback on code quality and best practices.'
+]

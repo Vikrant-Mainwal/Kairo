@@ -1,24 +1,21 @@
 import { useState, useCallback, useRef } from "react";
-import {  ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import { useStreaming } from "../../hooks/useStreaming";
 import {
   MODELS,
   SAMPLE_PROMPTS,
-  DEFAULT_SYSTEM_PROMPT,
+  SAMPLE_SYSTEM_PROMPTS,
 } from "../../services/models";
 import { MetricsBar } from "../metrics/MetricsBar";
 import { AudioInput } from "./AudioInput";
 import { StreamOutput } from "./StreamOutput";
-// import { Button } from "../ui/Button";
 import { Select } from "../ui/Select";
-import type { InputMode } from "../../types";
 import ChatInput from "../ui/ChatInput";
 
 export function Playground() {
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState(MODELS[0].id);
-  const [inputMode, setInputMode] = useState<InputMode>("text");
-  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
+  const [systemPrompt, setSystemPrompt] = useState(SAMPLE_SYSTEM_PROMPTS[0]);
   const [showSystem, setShowSystem] = useState(false);
   const lastRequestRef = useRef<{
     prompt: string;
@@ -81,7 +78,7 @@ export function Playground() {
           </Select>
 
           {/* Mode toggle */}
-          <div
+          {/* <div
             role="group"
             aria-label="Input mode"
             className="flex border border-neutral-700 rounded-lg overflow-hidden"
@@ -101,37 +98,73 @@ export function Playground() {
                 {mode}
               </button>
             ))}
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* System prompt collapsible */}
-      <div className="rounded-xl border border-neutral-800 overflow-hidden">
+      <div className="rounded-xl border border-neutral-800 overflow-hidden bg-neutral-950">
         <button
           onClick={() => setShowSystem((s) => !s)}
           aria-expanded={showSystem}
           aria-controls="system-prompt-area"
-          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors"
+          className="w-full flex items-center gap-2 px-4 py-3 text-sm text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors"
         >
           {showSystem ? (
-            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+            <ChevronDown className="w-4 h-4" aria-hidden="true" />
           ) : (
-            <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+            <ChevronRight className="w-4 h-4" aria-hidden="true" />
           )}
-          System prompt
+
+          <span className="font-medium">System prompt</span>
         </button>
+
         {showSystem && (
           <div
             id="system-prompt-area"
-            className="px-4 pb-3 border-t border-neutral-800"
+            className="border-t border-neutral-800 px-4 py-4 space-y-4"
           >
             <textarea
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               aria-label="System prompt"
-              rows={2}
-              className="mt-3 w-full bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-sm font-mono text-neutral-300 placeholder-neutral-600 resize-y focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40"
+              rows={3}
+              placeholder="You are a helpful AI assistant..."
+              className="
+          w-full rounded-xl border border-neutral-700
+          bg-neutral-900 px-4 py-3
+          text-sm text-neutral-200 font-mono
+          placeholder:text-neutral-500
+          focus:outline-none
+          focus:ring-2 focus:ring-kairo-500/40
+          focus:border-kairo-500/40
+          resize-none
+        "
             />
+
+            <div className="flex flex-wrap gap-2">
+              {SAMPLE_SYSTEM_PROMPTS.map((sp) => (
+                <button
+                  key={sp}
+                  onClick={() => setSystemPrompt(sp)}
+                  className="
+              px-3 py-1.5 rounded-full
+              text-xs
+              border border-neutral-700
+              bg-neutral-900
+              text-neutral-400
+              hover:text-white
+              hover:border-neutral-500
+              hover:bg-neutral-800
+              transition-colors
+              max-w-full
+              truncate
+            "
+                >
+                  {sp.length > 40 ? sp.slice(0, 40) + "…" : sp}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -152,30 +185,33 @@ export function Playground() {
           </button>
         ))}
       </div>
-
-      {/* Input area */}
-      {inputMode === "text" ? (
-        <div className="relative">
-          <ChatInput
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onSend={handleRun}
-            aria-label="Prompt input"
-            placeholder="Message AI..."
-            rows={1}
-            streaming={streaming}
-          />
-          
-        </div>
-      ) : (
-        <AudioInput
-          onTranscript={(t) => setPrompt((p) => (p ? `${p}\n${t}` : t))}
+      <div className="relative">
+        <ChatInput
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onSend={handleRun}
+          aria-label="Prompt input"
+          placeholder="Message AI..."
+          rows={1}
+          streaming={streaming}
         />
-      )}
+
+        <div className="absolute right-14 bottom-3">
+          <AudioInput
+            onTranscript={(text) => {
+              setPrompt((prev) => {
+                if (!prev.trim()) return text;
+
+                return prev.endsWith(" ") ? prev + text : prev + " " + text;
+              });
+            }}
+          />
+        </div>
+      </div>
 
       {/* Metrics bar */}
-       <div className="flex items-center justify-end gap-3 flex-wrap"> 
+      <div className="flex items-center justify-end gap-3 flex-wrap">
         <MetricsBar metrics={metrics} streaming={streaming} />
       </div>
 

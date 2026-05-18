@@ -1,18 +1,18 @@
 import { useState, useCallback, useRef } from "react";
-import { GitCompare, ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   MODELS,
-  DEFAULT_SYSTEM_PROMPT,
+  SAMPLE_SYSTEM_PROMPTS,
   SAMPLE_PROMPTS,
 } from "../../services/models";
 import { computeDiff } from "../../utils/diff";
 import { useStreaming } from "../../hooks/useStreaming";
 import { DiffPanel } from "./DiffPanel";
-import { Button } from "../ui/Button";
 import { Select } from "../ui/Select";
 import { Badge } from "../ui/Badge";
 import type { DiffResult } from "../../types";
 import ChatInput from "../ui/ChatInput";
+import { StreamOutput } from "../playground/StreamOutput";
 
 function StatCard({
   label,
@@ -29,7 +29,7 @@ function StatCard({
     default: "text-neutral-100",
   };
   return (
-    <div className="px-4 py-2.5 bg-neutral-900 rounded-lg border border-neutral-800 text-center min-w-[72px]">
+    <div className="px-4 py-2.5 bg-neutral-900 rounded-lg border border-neutral-800 text-center min-w-18">
       <div className="text-[10px] uppercase tracking-widest text-neutral-500 mb-0.5">
         {label}
       </div>
@@ -46,7 +46,7 @@ export function DiffView() {
   const [prompt, setPrompt] = useState("");
   const [modelA, setModelA] = useState(MODELS[0].id);
   const [modelB, setModelB] = useState(MODELS[1]?.id ?? MODELS[0].id);
-  const [systemPrompt, setSystemPrompt] = useState(DEFAULT_SYSTEM_PROMPT);
+  const [systemPrompt, setSystemPrompt] = useState(SAMPLE_SYSTEM_PROMPTS[0]);
   const [showSystem, setShowSystem] = useState(false);
   const [result, setResult] = useState<DiffResult | null>(null);
   const [comparing, setComparing] = useState(false);
@@ -61,56 +61,48 @@ export function DiffView() {
     output: outputB,
     stream: streamB,
   } = useStreaming();
-  const comparisonRequestRef = useRef<{
-    prompt: string;
-    modelA: string;
-    modelB: string;
-    systemPrompt: string;
-  } | null>(null);
+  // const comparisonRequestRef = useRef<{
+  //   prompt: string;
+  //   modelA: string;
+  //   modelB: string;
+  //   systemPrompt: string;
+  // } | null>(null);
 
   const handleCompare = useCallback(async () => {
-  if (!prompt.trim() || comparing) return;
+    if (!prompt.trim() || comparing) return;
 
-  const req = {
-    prompt: prompt.trim(),
-    modelA,
-    modelB,
-    systemPrompt,
-  };
+    const req = {
+      prompt: prompt.trim(),
+      modelA,
+      modelB,
+      systemPrompt,
+    };
 
-  setComparing(true);
-  setResult(null);
+    setComparing(true);
+    setResult(null);
 
-  try {
-    const [responseA, responseB] = await Promise.all([
-      streamA(req.prompt, {
-        model: req.modelA,
-        systemPrompt: req.systemPrompt,
-      }),
+    try {
+      const [responseA, responseB] = await Promise.all([
+        streamA(req.prompt, {
+          model: req.modelA,
+          systemPrompt: req.systemPrompt,
+        }),
 
-      streamB(req.prompt, {
-        model: req.modelB,
-        systemPrompt: req.systemPrompt,
-      }),
-    ]);
+        streamB(req.prompt, {
+          model: req.modelB,
+          systemPrompt: req.systemPrompt,
+        }),
+      ]);
 
-    const diff = computeDiff(responseA, responseB);
+      const diff = computeDiff(responseA, responseB);
 
-    setResult(diff);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setComparing(false);
-  }
-}, [
-  prompt,
-  modelA,
-  modelB,
-  systemPrompt,
-  comparing,
-  streamA,
-  streamB,
-]);
+      setResult(diff);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setComparing(false);
+    }
+  }, [prompt, modelA, modelB, systemPrompt, comparing, streamA, streamB]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -162,32 +154,68 @@ export function DiffView() {
       </div>
 
       {/* System prompt collapsible */}
-      <div className="rounded-xl border border-neutral-800 overflow-hidden">
+      <div className="rounded-xl border border-neutral-800 overflow-hidden bg-neutral-950">
         <button
           onClick={() => setShowSystem((s) => !s)}
           aria-expanded={showSystem}
           aria-controls="system-prompt-area"
-          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors"
+          className="w-full flex items-center gap-2 px-4 py-3 text-sm text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors"
         >
           {showSystem ? (
-            <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+            <ChevronDown className="w-4 h-4" aria-hidden="true" />
           ) : (
-            <ChevronRight className="w-3.5 h-3.5" aria-hidden="true" />
+            <ChevronRight className="w-4 h-4" aria-hidden="true" />
           )}
-          System prompt
+
+          <span className="font-medium">System prompt</span>
         </button>
+
         {showSystem && (
           <div
             id="system-prompt-area"
-            className="px-4 pb-3 border-t border-neutral-800"
+            className="border-t border-neutral-800 px-4 py-4 space-y-4"
           >
             <textarea
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               aria-label="System prompt"
-              rows={2}
-              className="mt-3 w-full bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-sm font-mono text-neutral-300 placeholder-neutral-600 resize-y focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40"
+              rows={3}
+              placeholder="You are a helpful AI assistant..."
+              className="
+          w-full rounded-xl border border-neutral-700
+          bg-neutral-900 px-4 py-3
+          text-sm text-neutral-200 font-mono
+          placeholder:text-neutral-500
+          focus:outline-none
+          focus:ring-2 focus:ring-kairo-500/40
+          focus:border-kairo-500/40
+          resize-none
+        "
             />
+
+            <div className="flex flex-wrap gap-2">
+              {SAMPLE_SYSTEM_PROMPTS.map((sp) => (
+                <button
+                  key={sp}
+                  onClick={() => setSystemPrompt(sp)}
+                  className="
+              px-3 py-1.5 rounded-full
+              text-xs
+              border border-neutral-700
+              bg-neutral-900
+              text-neutral-400
+              hover:text-white
+              hover:border-neutral-500
+              hover:bg-neutral-800
+              transition-colors
+              max-w-full
+              truncate
+            "
+                >
+                  {sp.length > 40 ? sp.slice(0, 40) + "…" : sp}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -232,35 +260,29 @@ export function DiffView() {
           <label htmlFor="output-a" className="text-sm text-neutral-500">
             Model A: {labelA}
           </label>
-          <div
-            id="output-a"
-            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-mono text-neutral-300 resize-y min-h-38 overflow-y-auto"
-          >
-            {streamingA ? (
-              <div className="text-neutral-500 animate-pulse">
-                Streaming response…
-              </div>
-            ) : (
-              outputA || <div className="text-neutral-600">No output yet</div>
-            )}
-          </div>
+
+          <StreamOutput
+            output={outputA}
+            streaming={streamingA}
+            error={null}
+            onRetry={handleCompare}
+            onAbort={() => {}}
+            onReset={() => {}}
+          />
         </div>
         <div className="space-y-1.5">
           <label htmlFor="output-b" className="text-sm text-neutral-500">
             Model B: {labelB}
           </label>
-          <div
-            id="output-b"
-            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-mono text-neutral-300 resize-y min-h-38 overflow-y-auto"
-          >
-            {streamingB ? (
-              <div className="text-neutral-500 animate-pulse">
-                Streaming response…
-              </div>
-            ) : (
-              outputB || <div className="text-neutral-600">No output yet</div>
-            )}
-          </div>
+
+          <StreamOutput
+            output={outputB}
+            streaming={streamingB}
+            error={null}
+            onRetry={handleCompare}
+            onAbort={() => {}}
+            onReset={() => {}}
+          />
         </div>
       </div>
 
