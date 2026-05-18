@@ -7,7 +7,6 @@ import {
   SAMPLE_SYSTEM_PROMPTS,
 } from "../../services/models";
 import { MetricsBar } from "../metrics/MetricsBar";
-import { AudioInput } from "./AudioInput";
 import { StreamOutput } from "./StreamOutput";
 import { Select } from "../ui/Select";
 import ChatInput from "../ui/ChatInput";
