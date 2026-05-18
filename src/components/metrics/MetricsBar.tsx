@@ -8,7 +8,7 @@ interface MetricCardProps {
 
 function MetricCard({ label, value, unit }: MetricCardProps) {
   return (
-    <div className="flex flex-col items-center px-4 py-2 bg-neutral-900 rounded-lg border border-neutral-800 min-w-[72px]">
+    <div className="flex flex-col items-center px-4 py-2 bg-neutral-900 rounded-lg border border-neutral-800 min-w-18 w-8 h-15">
       <span className="text-[10px] uppercase tracking-widest text-neutral-500 mb-0.5">{label}</span>
       <span className="font-mono text-base font-medium text-neutral-100 leading-none">
         {value}
@@ -31,7 +31,7 @@ export function MetricsBar({ metrics, streaming }: MetricsBarProps) {
       aria-label="Streaming metrics"
       className="flex items-center gap-2 flex-wrap"
     >
-      <MetricCard label="Tokens" value={metrics.tokens} />
+      <MetricCard label="Tokens" value={metrics.tokens} unit="/s"/>
       <MetricCard label="TPS" value={metrics.tps} unit="/s" />
       <MetricCard label="Time" value={metrics.elapsed} unit="s" />
       {streaming && (

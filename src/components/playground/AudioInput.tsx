@@ -4,47 +4,76 @@ import { Button } from "../ui/Button";
 
 interface AudioInputProps {
   onTranscript: (text: string) => void;
+  onRecordingChange?: (recording: boolean) => void;
 }
 
-export function AudioInput({ onTranscript }: AudioInputProps) {
-  const { state, error, startRecording, stopRecording } =
+export function AudioInput({
+  onTranscript,
+  onRecordingChange,
+}: AudioInputProps) {
+  const { state, error, startRecording, stopRecording, reset } =
     useAudioRecorder(onTranscript);
 
   return (
     <div className="">
       <div className="flex items-center gap-3">
-
-        <Button
-          onClick={state === "recording" ? stopRecording : startRecording}
-          disabled={state === "transcribing"}
-          variant="ghost"
-          size="sm"
-        >
+        <div className="flex items-center gap-2">
           {state === "recording" ? (
-            <Square className="w-6 h-6 text-red-400" />
+            <>
+              {/* Cancel */}
+              <Button
+                onClick={() => {
+                  reset();
+                  onRecordingChange?.(false);
+                }}
+                variant="ghost"
+                size="sm"
+                className="
+          w-10 h-10 rounded-full
+          bg-neutral-800 hover:bg-neutral-700
+        "
+              >
+                <p className="text-red-400 text-lg">✕</p>
+              </Button>
+
+              {/* Stop + Transcribe */}
+              <Button
+                onClick={() => {
+                  onRecordingChange?.(false);
+                  stopRecording();
+                }}
+                variant="ghost"
+                size="sm"
+                className="
+          w-10 h-10 rounded-full
+          bg-white hover:bg-neutral-200
+        "
+              >
+                <Square className="w-5 h-5 text-black fill-black" />
+              </Button>
+            </>
           ) : state === "transcribing" ? (
-            <Loader2 className="w-6 h-6 animate-spin" />
+            <Button disabled variant="ghost" size="sm">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </Button>
           ) : (
-            <Mic className="w-6 h-6" />
+            <Button
+              onClick={() => {
+                onRecordingChange?.(true);
+                startRecording();
+              }}
+              variant="ghost"
+              size="sm"
+              className="
+        w-10 h-10 rounded-full
+        bg-neutral-800 hover:bg-neutral-700
+      "
+            >
+              <Mic className="w-5 h-5" />
+            </Button>
           )}
-        </Button>
-
-        {/* {state === "done" && (
-          <Button onClick={reset} variant="ghost" size="sm">
-            <MicOff className="w-3.5 h-3.5" aria-hidden="true" />
-            Clear
-          </Button>
-        )} */}
+        </div>
       </div>
-
-      {/* {audioUrl && (
-        <audio
-          controls
-          src={audioUrl}
-          aria-label="Recorded audio preview"
-          className="w-full h-8"
-        />
-      )} */}
 
       {error && (
         <p

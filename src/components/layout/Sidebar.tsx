@@ -119,8 +119,6 @@ const HISTORY_OLDER: ChatEntry[] = [
   },
 ];
 
-// ─── Nav items ────────────────────────────────────────────────
-
 interface NavItem {
   id: TabId;
   label: string;
@@ -134,7 +132,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "docs", label: "Docs", icon: BookOpen },
 ];
 
-// ─── Sub-components
+// Sub-components
 
 function ChatRow({
   entry,
@@ -148,7 +146,6 @@ function ChatRow({
   onClick: () => void;
 }) {
   
-
   if (collapsed) {
     return (
       <button
@@ -360,7 +357,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                       : "text-neutral-500 hover:text-neutral-200 hover:bg-neutral-800/60"
                   }`}
                 >
-                  <Icon className="w-4 h-4" aria-hidden="true" />
+                  <Icon className="w-5 h-5" aria-hidden="true" />
                 </button>
               );
             })}
@@ -381,7 +378,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
                   }`}
                 >
                   <Icon
-                    className={`w-3.5 h-3.5 shrink-0 ${activeTab === item.id ? "text-kairo-400" : ""}`}
+                    className={`w-5 h-5 shrink-0 ${activeTab === item.id ? "text-kairo-400" : ""}`}
                     aria-hidden="true"
                   />
                   {item.label}
@@ -502,7 +499,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               aria-label="Settings"
               className="w-full flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800 transition-colors"
             >
-              <Settings className="w-4 h-4" aria-hidden="true" />
+              <Settings className="w-5 h-5" aria-hidden="true" />
             </button>
             {/* <a
               href="https://github.com/Vikrant-Mainwal/Kairo"
@@ -523,7 +520,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         ) : (
           <div className="space-y-0.5">
             <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors">
-              <Settings className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+              <Settings className="w-5 h-5 shrink-0" aria-hidden="true" />
               Settings
             </button>
             

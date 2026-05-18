@@ -34,3 +34,12 @@ export async function transcribeAudio(audioBlob: Blob) {
     return ''
   }
 }
+// export async function transcribeAudio(audioBlob: Blob) {
+//   console.log(audioBlob)
+
+//   // fake delay
+//   await new Promise((resolve) => setTimeout(resolve, 1500))
+
+//   // dummy transcript
+//   return 'Hello Vikrant, this is a dummy transcription response.'
+// }

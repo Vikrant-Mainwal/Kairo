@@ -11,12 +11,14 @@ import { AudioInput } from "./AudioInput";
 import { StreamOutput } from "./StreamOutput";
 import { Select } from "../ui/Select";
 import ChatInput from "../ui/ChatInput";
+import { useAudioRecorder } from "../../hooks/useAudioRecorder";
 
 export function Playground() {
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState(MODELS[0].id);
   const [systemPrompt, setSystemPrompt] = useState(SAMPLE_SYSTEM_PROMPTS[0]);
   const [showSystem, setShowSystem] = useState(false);
+
   const lastRequestRef = useRef<{
     prompt: string;
     model: string;
@@ -52,6 +54,14 @@ export function Playground() {
     },
     [handleRun],
   );
+
+  const recorder = useAudioRecorder((text) => {
+    setPrompt((prev) => {
+      if (!prev.trim()) return text;
+
+      return prev.endsWith(" ") ? prev + text : prev + " " + text;
+    });
+  });
 
   return (
     <section aria-labelledby="playground-heading" className="space-y-4 m-10">
@@ -185,7 +195,7 @@ export function Playground() {
           </button>
         ))}
       </div>
-      <div className="relative">
+      <div className="">
         <ChatInput
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
@@ -195,10 +205,12 @@ export function Playground() {
           placeholder="Message AI..."
           rows={1}
           streaming={streaming}
+          recorder={recorder}
         />
 
-        <div className="absolute right-14 bottom-3">
+        {/* <div className="absolute right-14 bottom-3">
           <AudioInput
+            onRecordingChange={setIsRecording}
             onTranscript={(text) => {
               setPrompt((prev) => {
                 if (!prev.trim()) return text;
@@ -207,7 +219,7 @@ export function Playground() {
               });
             }}
           />
-        </div>
+        </div> */}
       </div>
 
       {/* Metrics bar */}
