@@ -12,7 +12,7 @@ function MetricCard({ label, value, unit }: MetricCardProps) {
       <span className="text-[10px] uppercase tracking-widest text-neutral-500 mb-0.5">{label}</span>
       <span className="font-mono text-base font-medium text-neutral-100 leading-none">
         {value}
-        {unit && <span className="text-xs text-neutral-500 ml-0.5 font-normal">{unit}</span>}
+        {unit && <span className="text-sm text-neutral-500 ml-0.5 font-normal">{unit}</span>}
       </span>
     </div>
   )

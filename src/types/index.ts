@@ -2,7 +2,7 @@
 
 export type InputMode = 'text' | 'audio'
 
-export type TabId = 'playground' | 'diff' | 'docs'
+export type TabId = 'chats' | 'playground' | 'diff' | 'docs'
 
 export interface Model {
   id: string

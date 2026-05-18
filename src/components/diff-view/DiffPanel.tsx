@@ -35,12 +35,12 @@ export function DiffPanel({ label, modelLabel, tokens, isEmpty }: DiffPanelProps
     <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
       {/* Sticky header */}
       <div className="flex items-center justify-between px-4 py-2 bg-neutral-900 border-b border-neutral-800 sticky top-0 z-10">
-        <span className="text-xs font-medium text-neutral-300">{label}</span>
-        <span className="text-xs text-neutral-500">{modelLabel}</span>
+        <span className="text-lg font-medium text-neutral-300">{label}</span>
+        <span className="text-md text-neutral-500">{modelLabel}</span>
       </div>
 
       <div
-        className="flex-1 p-4 font-mono text-[12.5px] leading-[1.85] whitespace-pre-wrap break-words overflow-y-auto max-h-[360px] text-neutral-300"
+        className="flex-1 p-4 font-mono text-[12.5px] leading-[1.85] whitespace-pre-wrap wrap-break-word overflow-y-auto max-h-90 text-neutral-300"
         aria-label={`${label} diff output`}
       >
         {isEmpty ? (

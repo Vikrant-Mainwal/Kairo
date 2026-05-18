@@ -55,6 +55,7 @@ export function DiffView() {
       
       // Compute diff after both are done
       setResult(computeDiff(outputA, outputB))
+      
     } finally {
       setComparing(false)
     }
@@ -71,18 +72,18 @@ export function DiffView() {
   const labelB = MODELS.find(m => m.id === modelB)?.label ?? 'Model B'
 
   return (
-    <section aria-labelledby="diff-heading" className="space-y-4">
+    <section aria-labelledby="diff-heading" className="space-y-4 m-10">
 
       {/* Header row */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h2 id="diff-heading" className="text-sm font-medium text-neutral-200">
+        <h2 id="diff-heading" className="text-xl font-medium text-neutral-200">
           Compare same prompt with different models
         </h2>
         <div className="flex items-center gap-3 flex-wrap">
           <Select id="model-a" label="A:" value={modelA} onChange={e => setModelA(e.target.value)}>
             {MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
           </Select>
-          <span className="text-neutral-600 text-sm">↔</span>
+          <span className="text-neutral-600 text-md">↔</span>
           <Select id="model-b" label="B:" value={modelB} onChange={e => setModelB(e.target.value)}>
             {MODELS.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
           </Select>
@@ -95,7 +96,7 @@ export function DiffView() {
           onClick={() => setShowSystem(s => !s)}
           aria-expanded={showSystem}
           aria-controls="system-prompt-area"
-          className="w-full flex items-center gap-2 px-4 py-2.5 text-xs text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors"
+          className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors"
         >
           {showSystem
             ? <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
@@ -110,7 +111,7 @@ export function DiffView() {
               onChange={e => setSystemPrompt(e.target.value)}
               aria-label="System prompt"
               rows={2}
-              className="mt-3 w-full bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-xs font-mono text-neutral-300 placeholder-neutral-600 resize-y focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40"
+              className="mt-3 w-full bg-neutral-900 border border-neutral-700 rounded-lg px-3 py-2 text-sm font-mono text-neutral-300 placeholder-neutral-600 resize-y focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40"
             />
           </div>
         )}
@@ -122,7 +123,7 @@ export function DiffView() {
           <button
             key={sp}
             onClick={() => setPrompt(sp)}
-            className="px-3 py-1.5 rounded-full text-xs border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 transition-colors truncate max-w-[200px]"
+            className="px-3 py-1.5 rounded-full text-sm border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 transition-colors truncate max-w-50"
           >
             {sp.length > 36 ? sp.slice(0, 36) + '…' : sp}
           </button>
@@ -140,7 +141,7 @@ export function DiffView() {
           rows={5}
           disabled={comparing}
           className={[
-            'w-full rounded-xl border px-4 py-3 text-sm text-neutral-200',
+            'w-full rounded-xl border px-4 py-3 text-md text-neutral-200',
             'placeholder-neutral-600 font-sans leading-relaxed resize-y',
             'focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40',
             'transition-colors',
@@ -165,12 +166,12 @@ export function DiffView() {
       {/* Output panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <label htmlFor="output-a" className="text-xs text-neutral-500">
+          <label htmlFor="output-a" className="text-sm text-neutral-500">
             Model A: {labelA}
           </label>
           <div
             id="output-a"
-            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs font-mono text-neutral-300 resize-y min-h-[150px] overflow-y-auto"
+            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-mono text-neutral-300 resize-y min-h-38 overflow-y-auto"
           >
             {streamingA ? (
               <div className="text-neutral-500 animate-pulse">Streaming response…</div>
@@ -180,12 +181,12 @@ export function DiffView() {
           </div>
         </div>
         <div className="space-y-1.5">
-          <label htmlFor="output-b" className="text-xs text-neutral-500">
+          <label htmlFor="output-b" className="text-sm text-neutral-500">
             Model B: {labelB}
           </label>
           <div
             id="output-b"
-            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-xs font-mono text-neutral-300 resize-y min-h-[150px] overflow-y-auto"
+            className="w-full bg-neutral-900 border border-neutral-700 rounded-xl px-3 py-2.5 text-sm font-mono text-neutral-300 resize-y min-h-38 overflow-y-auto"
           >
             {streamingB ? (
               <div className="text-neutral-500 animate-pulse">Streaming response…</div>
@@ -206,7 +207,7 @@ export function DiffView() {
             <StatCard label="Removed" value={result.stats.removed} variant="danger" />
             <StatCard label="Similarity" value={`${result.stats.similarity}%`} />
           </div>
-          <div className="flex items-center gap-3 text-xs text-neutral-500">
+          <div className="flex items-center gap-3 text-sm text-neutral-500">
             <span className="flex items-center gap-1.5">
               <Badge variant="success">added</Badge> in B
             </span>

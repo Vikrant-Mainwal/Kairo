@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@import "tailwindcss";
-
 @theme {
   --color-kairo-50: #f5f7ff;
   --color-kairo-100: #e0e7ff;
@@ -27,6 +25,7 @@
   body {
     @apply bg-neutral-950 text-neutral-100 antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 18px;
   }
 
   :focus-visible {
@@ -58,10 +57,10 @@
     @apply bg-gradient-to-r from-kairo-400 to-violet-400 bg-clip-text text-transparent;
   }
   .glass {
-    @apply bg-white/[0.03] backdrop-blur-sm border border-white/[0.08];
+    @apply bg-white/[0.03] backdrop-blur-sm border border-white/8;
   }
   .glass-hover {
-    @apply hover:bg-white/[0.06] transition-colors duration-150;
+    @apply hover:bg-white/6 transition-colors duration-150;
   }
 }
 

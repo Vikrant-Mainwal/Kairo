@@ -15,7 +15,7 @@ export function HeroSection() {
       </div>
 
       <div className="text-center py-16 px-4 space-y-6">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-kairo-500/10 border border-kairo-500/20 text-kairo-400 text-xs font-medium">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-kairo-500/10 border border-kairo-500/20 text-kairo-400 text-sm font-medium">
           <span className="w-1.5 h-1.5 rounded-full bg-kairo-400 animate-pulse" />
           Now with Claude Sonnet 4
           <ArrowRight className="w-3 h-3" aria-hidden="true" />
@@ -36,7 +36,7 @@ export function HeroSection() {
           {features.map(({ icon: Icon, label, desc }) => (
             <div
               key={label}
-              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-xs"
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-neutral-900 border border-neutral-800 text-sm"
               title={desc}
             >
               <Icon className="w-3.5 h-3.5 text-kairo-400" aria-hidden="true" />

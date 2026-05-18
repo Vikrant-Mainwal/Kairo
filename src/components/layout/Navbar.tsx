@@ -36,7 +36,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
                   aria-selected={activeTab === tab.id}
                   onClick={() => onTabChange(tab.id)}
                   className={[
-                    'px-4 py-1.5 rounded-lg text-xs font-medium transition-all duration-150',
+                    'px-4 py-1.5 rounded-lg text-sm font-medium transition-all duration-150',
                     activeTab === tab.id
                       ? 'bg-neutral-700 text-neutral-100 shadow-sm'
                       : 'text-neutral-500 hover:text-neutral-300',
@@ -51,7 +51,7 @@ export function Navbar({ activeTab, onTabChange }: NavbarProps) {
           {/* Right actions */}
           <div className="flex items-center gap-2">
             <a
-              href="https://github.com"
+              href="https://github.com/Vikrant-Mainwal/Kairo"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="View on GitHub"

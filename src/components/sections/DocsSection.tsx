@@ -1,49 +1,54 @@
-import { useState, type ReactNode } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 
 interface AccordionItem {
-  title: string
-  content: string | ReactNode
+  title: string;
+  content: string | ReactNode;
 }
 
 function Accordion({ items }: { items: AccordionItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <div className="space-y-2">
-      {items.map((item, i) => (
-        <div key={item.title} className="rounded-xl border border-neutral-800 overflow-hidden">
-          <button
-            onClick={() => setOpenIndex(openIndex === i ? null : i)}
-            aria-expanded={openIndex === i}
-            className="w-full flex items-center justify-between px-5 py-4 text-sm font-medium text-neutral-200 hover:bg-neutral-800/50 transition-colors text-left"
+    <div className="flex flex-col justify-center w-full">
+      <div className="space-y-2 ">
+        {items.map((item, i) => (
+          <div
+            key={item.title}
+            className="rounded-xl border border-neutral-800 overflow-hidden"
           >
-            {item.title}
-            <ChevronDown
-              className={`w-4 h-4 text-neutral-500 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}
-              aria-hidden="true"
-            />
-          </button>
-          {openIndex === i && (
-            <div className="px-5 pb-5 border-t border-neutral-800 bg-neutral-900/30">
-              {typeof item.content === 'string' ? (
-                <pre className="mt-4 text-xs font-mono text-neutral-400 whitespace-pre-wrap leading-relaxed">
-                  {item.content}
-                </pre>
-              ) : (
-                <div className="mt-4">{item.content}</div>
-              )}
-            </div>
-          )}
-        </div>
-      ))}
+            <button
+              onClick={() => setOpenIndex(openIndex === i ? null : i)}
+              aria-expanded={openIndex === i}
+              className="w-full flex items-center justify-between px-5 py-4 text-md font-medium text-neutral-200 hover:bg-neutral-800/50 transition-colors text-left"
+            >
+              {item.title}
+              <ChevronDown
+                className={`w-4 h-4 text-neutral-500 transition-transform duration-200 ${openIndex === i ? "rotate-180" : ""}`}
+                aria-hidden="true"
+              />
+            </button>
+            {openIndex === i && (
+              <div className="px-5 pb-5 border-t border-neutral-800 bg-neutral-900/30">
+                {typeof item.content === "string" ? (
+                  <pre className="mt-4 text-sm font-mono text-neutral-400 whitespace-pre-wrap leading-relaxed">
+                    {item.content}
+                  </pre>
+                ) : (
+                  <div className="mt-4">{item.content}</div>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
-  )
+  );
 }
 
 const DOCS: AccordionItem[] = [
   {
-    title: 'LCS diff algorithm — how it works',
+    title: "LCS diff algorithm — how it works",
     content: `The Longest Common Subsequence (LCS) algorithm finds the longest sequence of tokens that appear in the same relative order in both model outputs — without requiring them to be contiguous.
 
 STEP 1 — Build the DP table:
@@ -57,7 +62,7 @@ STEP 2 — Backtrack from dp[m][n] to classify each token:
   • Only in A    → "removed" token (red strikethrough)`,
   },
   {
-    title: 'Complexity analysis',
+    title: "Complexity analysis",
     content: `Time:  O(m × n) — filling the DP matrix
 Space: O(m × n) — storing the matrix (can reduce to O(min(m,n)) with Hirschberg's algorithm)
 Recon: O(m + n) — backtracking from dp[m][n] to dp[0][0]
@@ -67,7 +72,7 @@ For typical AI outputs of 200–800 tokens each:
   800 × 800 = 640,000 operations — still synchronous, no workers needed.`,
   },
   {
-    title: 'Why LCS? Comparison with alternatives',
+    title: "Why LCS? Comparison with alternatives",
     content: `Myers Diff
   + Optimal for sparse diffs. O((m+n)·D) where D = edit distance.
   − Designed for line-level code diffing. Complex to implement correctly.
@@ -90,7 +95,7 @@ LCS wins because:
   ✓ Zero external dependencies.`,
   },
   {
-    title: 'Streaming architecture',
+    title: "Streaming architecture",
     content: `useStreaming() hook lifecycle:
   1. Opens fetch() with { stream: true } to Anthropic /v1/messages
   2. ReadableStream + TextDecoder decodes chunks incrementally
@@ -108,7 +113,7 @@ Partial output preservation:
   Users always see what was received before any failure.`,
   },
   {
-    title: 'Accessibility (WCAG AA)',
+    title: "Accessibility (WCAG AA)",
     content: `• aria-live="polite" on output region — screen readers announce new tokens
 • aria-busy on Run button during streaming
 • role="alert" on error messages — immediate screen reader announcement
@@ -122,7 +127,7 @@ Partial output preservation:
 • Semantic HTML: header, nav, main, section, h1–h2, label, button`,
   },
   {
-    title: 'Error handling strategy',
+    title: "Error handling strategy",
     content: `Every async path is wrapped in try/catch with AbortController:
 
 AbortError:
@@ -143,7 +148,7 @@ Partial output preservation rule:
   This is enforced by the streamReducer type-level design.`,
   },
   {
-    title: 'Project architecture',
+    title: "Project architecture",
     content: `src/
  ├── components/
  │    ├── playground/     # Playground, AudioInput, StreamOutput
@@ -168,18 +173,19 @@ Partial output preservation rule:
  │
  └── types/index.ts       # All shared TypeScript types`,
   },
-]
+];
 
 export function DocsSection() {
   return (
-    <section aria-labelledby="docs-heading" className="space-y-4">
-      <h2 id="docs-heading" className="text-sm font-medium text-neutral-200">
-        Architecture &amp; documentation
-      </h2>
-      <p className="text-sm text-neutral-500">
-        Technical notes on the diff algorithm, streaming architecture, accessibility, and error handling.
-      </p>
-      <Accordion items={DOCS} />
-    </section>
-  )
+      <section aria-labelledby="docs-heading" className="space-y-4 m-10">
+        <h2 id="docs-heading" className="text-lg font-medium text-neutral-200">
+          Architecture &amp; documentation
+        </h2>
+        <p className="text-md text-neutral-500">
+          Technical notes on the diff algorithm, streaming architecture,
+          accessibility, and error handling.
+        </p>
+        <Accordion items={DOCS} />
+      </section>
+  );
 }

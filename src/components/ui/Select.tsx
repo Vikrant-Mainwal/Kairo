@@ -9,14 +9,14 @@ export function Select({ label, id, className, children, ...props }: SelectProps
   return (
     <div className="flex items-center gap-2">
       {label && (
-        <label htmlFor={id} className="text-xs text-neutral-500 whitespace-nowrap">
+        <label htmlFor={id} className="text-sm text-neutral-500 whitespace-nowrap">
           {label}
         </label>
       )}
       <select
         id={id}
         className={cn(
-          'bg-neutral-900 border border-neutral-700 text-neutral-200 text-xs',
+          'bg-neutral-900 border border-neutral-700 text-neutral-200 text-sm',
           'rounded-lg px-2.5 py-1.5 pr-7 appearance-none cursor-pointer',
           'focus:outline-none focus:ring-2 focus:ring-kairo-500/50 focus:border-kairo-500/50',
           'transition-colors hover:border-neutral-600',

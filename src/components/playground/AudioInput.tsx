@@ -37,7 +37,7 @@ export function AudioInput({ onTranscript }: AudioInputProps) {
         ) : null}
 
         {state === 'recording' && (
-          <span role="status" aria-live="assertive" className="flex items-center gap-2 text-xs text-red-400 font-medium">
+          <span role="status" aria-live="assertive" className="flex items-center gap-2 text-sm text-red-400 font-medium">
             <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
             Recording…
           </span>
@@ -61,12 +61,12 @@ export function AudioInput({ onTranscript }: AudioInputProps) {
       )}
 
       {error && (
-        <p role="alert" className="text-xs text-red-400 flex items-center gap-1.5">
+        <p role="alert" className="text-sm text-red-400 flex items-center gap-1.5">
           <span aria-hidden="true">⚠</span> {error}
         </p>
       )}
 
-      <p className="text-xs text-neutral-600">
+      <p className="text-sm text-neutral-600">
         In production, audio is sent to a speech-to-text API (e.g. Whisper) for transcription.
       </p>
     </div>
