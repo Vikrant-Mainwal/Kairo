@@ -13,6 +13,7 @@ import { Badge } from "../ui/Badge";
 import type { DiffResult } from "../../types";
 import ChatInput from "../ui/ChatInput";
 import { StreamOutput } from "../playground/StreamOutput";
+import { useAudioRecorder } from "../../hooks/useAudioRecorder";
 
 function StatCard({
   label,
@@ -113,6 +114,16 @@ export function DiffView() {
     },
     [handleCompare],
   );
+
+  const recorder = useAudioRecorder((text) => {
+  setPrompt((prev) => {
+    if (!prev.trim()) return text;
+
+    return prev.endsWith(" ")
+      ? prev + text
+      : prev + " " + text;
+  });
+});
 
   const labelA = MODELS.find((m) => m.id === modelA)?.label ?? "Model A";
   const labelB = MODELS.find((m) => m.id === modelB)?.label ?? "Model B";
@@ -249,10 +260,9 @@ export function DiffView() {
           disabled={comparing}
           streaming={comparing}
           onSend={handleCompare}
+          recorder={recorder}
         />
       </div>
-
-      {/* Compare button */}
 
       {/* Output panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
