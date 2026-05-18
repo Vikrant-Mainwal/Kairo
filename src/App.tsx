@@ -6,38 +6,6 @@ import { DocsSection } from "./components/sections/DocsSection";
 import type { TabId } from "./types";
 import { Sidebar } from "./components/layout/Sidebar";
 
-function Footer() {
-  return (
-    <footer className="mt-24 border-t border-neutral-800/50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between gap-4 flex-wrap">
-        <p className="text-sm text-neutral-600">
-          © {new Date().getFullYear()} Kairo. Built with React + Vite +
-          Tailwind.
-        </p>
-        <div className="flex items-center gap-4 text-sm text-neutral-600">
-          <a
-            href="https://docs.anthropic.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-neutral-400 transition-colors"
-          >
-            Anthropic docs
-          </a>
-          <span>·</span>
-          <a
-            href="https://github.com/Vikrant-Mainwal/Kairo"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-neutral-400 transition-colors"
-          >
-            GitHub
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 export default function App() {
   const [tab, setTab] = useState<TabId>("playground");
 

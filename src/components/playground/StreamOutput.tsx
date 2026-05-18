@@ -12,7 +12,7 @@ interface StreamOutputProps {
   onReset: () => void
 }
 
-export function StreamOutput({ output, streaming, error, onRetry, onAbort, onReset }: StreamOutputProps) {
+export function StreamOutput({ output, streaming, error, onRetry, onAbort}: StreamOutputProps) {
   const endRef = useRef<HTMLDivElement>(null)
   const [copied, setCopied] = useState(false)
 
