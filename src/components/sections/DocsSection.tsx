@@ -48,28 +48,28 @@ function Accordion({ items }: { items: AccordionItem[] }) {
 
 const DOCS: AccordionItem[] = [
   {
-    title: "LCS diff algorithm — how it works",
-    content: `The Longest Common Subsequence (LCS) algorithm finds the longest sequence of tokens that appear in the same relative order in both model outputs — without requiring them to be contiguous.
+    title: "LCS diff algorithm - how it works",
+    content: `The Longest Common Subsequence (LCS) algorithm finds the longest sequence of tokens that appear in the same relative order in both model outputs - without requiring them to be contiguous.
 
-STEP 1 — Build the DP table:
+STEP 1  - Build the DP table:
   dp[i][j] = LCS length of A[0..i-1] and B[0..j-1]
   if A[i-1] === B[j-1]:  dp[i][j] = dp[i-1][j-1] + 1
   else:                   dp[i][j] = max(dp[i-1][j], dp[i][j-1])
 
-STEP 2 — Backtrack from dp[m][n] to classify each token:
+STEP 2  - Backtrack from dp[m][n] to classify each token:
   • Both match   → "common" token (shown normally)
   • Only in B    → "added" token  (green highlight)
   • Only in A    → "removed" token (red strikethrough)`,
   },
   {
     title: "Complexity analysis",
-    content: `Time:  O(m × n) — filling the DP matrix
-Space: O(m × n) — storing the matrix (can reduce to O(min(m,n)) with Hirschberg's algorithm)
-Recon: O(m + n) — backtracking from dp[m][n] to dp[0][0]
+    content: `Time:  O(m × n)  - filling the DP matrix
+Space: O(m × n)  - storing the matrix (can reduce to O(min(m,n)) with Hirschberg's algorithm)
+Recon: O(m + n)  - backtracking from dp[m][n] to dp[0][0]
 
 For typical AI outputs of 200–800 tokens each:
-  200 × 800 = 160,000 operations — runs instantly in the browser.
-  800 × 800 = 640,000 operations — still synchronous, no workers needed.`,
+  200 × 800 = 160,000 operations  - runs instantly in the browser.
+  800 × 800 = 640,000 operations  - still synchronous, no workers needed.`,
   },
   {
     title: "Why LCS? Comparison with alternatives",
@@ -85,11 +85,11 @@ Naive comparison
 
 Line-based diffing
   + Great for source code with meaningful line breaks.
-  − AI outputs are paragraphs — no meaningful line boundaries.
+  − AI outputs are paragraphs  - no meaningful line boundaries.
   − One changed word shows the entire "line" as changed. Too coarse.
 
 LCS wins because:
-  ✓ Predictable O(m×n) — no degenerate cases.
+  ✓ Predictable O(m×n)  - no degenerate cases.
   ✓ Correct word-level alignment even for rephrased sentences.
   ✓ Simple, auditable backtracking. No edge cases.
   ✓ Zero external dependencies.`,
@@ -109,18 +109,18 @@ useMetrics() hook:
   • Calls stop() on completion for a final accurate snapshot
 
 Partial output preservation:
-  The streaming reducer ONLY appends — it never clears output on error.
+  The streaming reducer ONLY appends  - it never clears output on error.
   Users always see what was received before any failure.`,
   },
   {
     title: "Accessibility (WCAG AA)",
-    content: `• aria-live="polite" on output region — screen readers announce new tokens
+    content: `• aria-live="polite" on output region  - screen readers announce new tokens
 • aria-busy on Run button during streaming
-• role="alert" on error messages — immediate screen reader announcement
+• role="alert" on error messages  - immediate screen reader announcement
 • aria-label on all inputs, buttons, and interactive controls
 • aria-pressed on toggle buttons (text/audio mode)
 • aria-expanded on collapsible sections (system prompt)
-• All actions reachable via Tab + Enter/Space — no mouse required
+• All actions reachable via Tab + Enter/Space  - no mouse required
 • focus-visible outline on every interactive element (2px kairo-400)
 • Color is never the sole means of conveying information
   → Diff tokens have text + color + strikethrough for removed tokens
@@ -131,7 +131,7 @@ Partial output preservation:
     content: `Every async path is wrapped in try/catch with AbortController:
 
 AbortError:
-  → "Stream aborted — partial output preserved."
+  → "Stream aborted  - partial output preserved."
   → Output is kept. User sees what arrived before abort.
 
 Network failure (Failed to fetch):
@@ -171,7 +171,7 @@ Partial output preservation rule:
  ├── services/
  │    └── models.ts       # Model list + sample prompts
  │
- └── types/index.ts       # All shared TypeScript types`,
+ └── types/index.ts      # All shared TypeScript types`,
   },
 ];
 

@@ -14,6 +14,7 @@ import type { DiffResult } from "../../types";
 import ChatInput from "../ui/ChatInput";
 import { StreamOutput } from "../playground/StreamOutput";
 import { useAudioRecorder } from "../../hooks/useAudioRecorder";
+import { MetricsBar } from "../metrics/MetricsBar";
 
 function StatCard({
   label,
@@ -29,13 +30,28 @@ function StatCard({
     danger: "text-red-400",
     default: "text-neutral-100",
   };
+
   return (
-    <div className="px-4 py-2.5 bg-neutral-900 rounded-lg border border-neutral-800 text-center min-w-18">
+    <div
+      className="
+        px-3 sm:px-4
+        py-2.5
+        bg-neutral-900
+        rounded-lg
+        border border-neutral-800
+        text-center
+        min-w-23
+        flex-1 sm:flex-none
+      "
+    >
       <div className="text-[10px] uppercase tracking-widest text-neutral-500 mb-0.5">
         {label}
       </div>
+
       <div
-        className={`font-mono text-base font-medium ${colors[variant ?? "default"]}`}
+        className={`font-mono text-sm sm:text-base font-medium ${
+          colors[variant ?? "default"]
+        }`}
       >
         {value}
       </div>
@@ -56,18 +72,15 @@ export function DiffView() {
     streaming: streamingA,
     output: outputA,
     stream: streamA,
+    metrics: metricsA,
   } = useStreaming();
+
   const {
     streaming: streamingB,
     output: outputB,
     stream: streamB,
+    metrics: metricsB,
   } = useStreaming();
-  // const comparisonRequestRef = useRef<{
-  //   prompt: string;
-  //   modelA: string;
-  //   modelB: string;
-  //   systemPrompt: string;
-  // } | null>(null);
 
   const handleCompare = useCallback(async () => {
     if (!prompt.trim() || comparing) return;
@@ -116,26 +129,53 @@ export function DiffView() {
   );
 
   const recorder = useAudioRecorder((text) => {
-  setPrompt((prev) => {
-    if (!prev.trim()) return text;
+    setPrompt((prev) => {
+      if (!prev.trim()) return text;
 
-    return prev.endsWith(" ")
-      ? prev + text
-      : prev + " " + text;
+      return prev.endsWith(" ") ? prev + text : prev + " " + text;
+    });
   });
-});
 
   const labelA = MODELS.find((m) => m.id === modelA)?.label ?? "Model A";
+
   const labelB = MODELS.find((m) => m.id === modelB)?.label ?? "Model B";
 
   return (
-    <section aria-labelledby="diff-heading" className="space-y-4 m-10">
-      {/* Header row */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <h2 id="diff-heading" className="text-xl font-medium text-neutral-200">
-          Compare same prompt with different models
-        </h2>
-        <div className="flex items-center gap-3 flex-wrap">
+    <section
+      aria-labelledby="diff-heading"
+      className="
+        space-y-5
+        px-3
+        sm:px-4
+        md:px-6
+        lg:px-10
+        py-4
+        w-full
+      "
+    >
+      {/* Header */}
+      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+        <div>
+          <h2
+            id="diff-heading"
+            className="
+              text-lg
+              sm:text-xl
+              md:text-2xl
+              font-semibold
+              text-neutral-100
+            "
+          >
+            Compare same prompt with different models
+          </h2>
+
+          <p className="text-sm text-neutral-500 mt-1">
+            Compare outputs side-by-side in real time
+          </p>
+        </div>
+
+        {/* Model Selectors */}
+        <div className="flex flex-col sm:flex-row gap-3 w-full xl:w-auto">
           <Select
             id="model-a"
             label="A:"
@@ -148,7 +188,11 @@ export function DiffView() {
               </option>
             ))}
           </Select>
-          <span className="text-neutral-600 text-md">↔</span>
+
+          <div className="hidden sm:flex items-center justify-center text-neutral-600 px-1">
+            ↔
+          </div>
+
           <Select
             id="model-b"
             label="B:"
@@ -164,21 +208,33 @@ export function DiffView() {
         </div>
       </div>
 
-      {/* System prompt collapsible */}
-      <div className="rounded-xl border border-neutral-800 overflow-hidden bg-neutral-950">
+      {/* System Prompt */}
+      <div className="rounded-2xl border border-neutral-800 overflow-hidden bg-neutral-950">
         <button
           onClick={() => setShowSystem((s) => !s)}
           aria-expanded={showSystem}
           aria-controls="system-prompt-area"
-          className="w-full flex items-center gap-2 px-4 py-3 text-sm text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900 transition-colors"
+          className="
+            w-full
+            flex
+            items-center
+            gap-2
+            px-4
+            py-3
+            text-sm
+            text-neutral-400
+            hover:text-neutral-200
+            hover:bg-neutral-900
+            transition-colors
+          "
         >
           {showSystem ? (
-            <ChevronDown className="w-4 h-4" aria-hidden="true" />
+            <ChevronDown className="w-4 h-4 shrink-0" aria-hidden="true" />
           ) : (
-            <ChevronRight className="w-4 h-4" aria-hidden="true" />
+            <ChevronRight className="w-4 h-4 shrink-0" aria-hidden="true" />
           )}
 
-          <span className="font-medium">System prompt</span>
+          <span className="font-medium">System Prompt</span>
         </button>
 
         {showSystem && (
@@ -190,40 +246,47 @@ export function DiffView() {
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
               aria-label="System prompt"
-              rows={3}
+              rows={4}
               placeholder="You are a helpful AI assistant..."
               className="
-          w-full rounded-xl border border-neutral-700
-          bg-neutral-900 px-4 py-3
-          text-sm text-neutral-200 font-mono
-          placeholder:text-neutral-500
-          focus:outline-none
-          focus:ring-2 focus:ring-kairo-500/40
-          focus:border-kairo-500/40
-          resize-none
-        "
+                w-full
+                rounded-xl
+                border border-neutral-700
+                bg-neutral-900
+                px-4 py-3
+                text-sm text-neutral-200
+                font-mono
+                placeholder:text-neutral-500
+                focus:outline-none
+                focus:ring-2
+                focus:ring-kairo-500/40
+                focus:border-kairo-500/40
+                resize-none
+              "
             />
 
-            <div className="flex flex-wrap gap-2">
+            <div className="hidden md:flex flex-wrap gap-2 ">
               {SAMPLE_SYSTEM_PROMPTS.map((sp) => (
                 <button
                   key={sp}
                   onClick={() => setSystemPrompt(sp)}
                   className="
-              px-3 py-1.5 rounded-full
-              text-xs
-              border border-neutral-700
-              bg-neutral-900
-              text-neutral-400
-              hover:text-white
-              hover:border-neutral-500
-              hover:bg-neutral-800
-              transition-colors
-              max-w-full
-              truncate
-            "
+                    px-3 py-2
+                    rounded-full
+                    text-xs
+                    border border-neutral-700
+                    bg-neutral-900
+                    text-neutral-400
+                    hover:text-white
+                    hover:border-neutral-500
+                    hover:bg-neutral-800
+                    transition-colors
+                    max-w-full
+                    wrap-break-word
+                    text-left
+                  "
                 >
-                  {sp.length > 40 ? sp.slice(0, 40) + "…" : sp}
+                  {sp.length > 50 ? sp.slice(0, 50) + "…" : sp}
                 </button>
               ))}
             </div>
@@ -231,9 +294,9 @@ export function DiffView() {
         )}
       </div>
 
-      {/* Sample prompts */}
+      {/* Sample Prompts */}
       <div
-        className="flex gap-2 flex-wrap"
+        className="hidden md:flex flex-wrap gap-2"
         role="group"
         aria-label="Sample prompts"
       >
@@ -241,14 +304,27 @@ export function DiffView() {
           <button
             key={sp}
             onClick={() => setPrompt(sp)}
-            className="px-3 py-1.5 rounded-full text-sm border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-neutral-200 hover:border-neutral-700 transition-colors truncate max-w-50"
+            className="
+              px-3 py-2
+              rounded-full
+              text-sm
+              border border-neutral-800
+              bg-neutral-900
+              text-neutral-400
+              hover:text-neutral-200
+              hover:border-neutral-700
+              transition-colors
+              max-w-full
+              wrap-break-word
+              text-left
+            "
           >
-            {sp.length > 36 ? sp.slice(0, 36) + "…" : sp}
+            {sp.length > 40 ? sp.slice(0, 40) + "…" : sp}
           </button>
         ))}
       </div>
 
-      {/* Prompt input */}
+      {/* Chat Input */}
       <div className="relative">
         <ChatInput
           value={prompt}
@@ -264,9 +340,22 @@ export function DiffView() {
         />
       </div>
 
-      {/* Output panels */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div className="space-y-1.5">
+      {/* Output Panels */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2 min-w-0">
+          <div
+            className="
+                    flex
+                    flex-wrap
+                    items-center
+                    justify-center
+                    sm:justify-end
+                    gap-3
+                  "
+          >
+            <MetricsBar metrics={metricsA} streaming={streamingA} />
+          </div>
+
           <label htmlFor="output-a" className="text-sm text-neutral-500">
             Model A: {labelA}
           </label>
@@ -280,7 +369,20 @@ export function DiffView() {
             onReset={() => {}}
           />
         </div>
-        <div className="space-y-1.5">
+
+        <div className="space-y-2 min-w-0">
+          <div
+            className="
+          flex
+          flex-wrap
+          items-center
+          justify-center
+          sm:justify-end
+          gap-3
+        "
+          >
+            <MetricsBar metrics={metricsB} streaming={streamingB} />
+          </div>
           <label htmlFor="output-b" className="text-sm text-neutral-500">
             Model B: {labelB}
           </label>
@@ -296,46 +398,65 @@ export function DiffView() {
         </div>
       </div>
 
-      {/* Stats + legend */}
+      {/* Stats */}
       {result && (
-        <div className="flex items-center justify-between gap-4 flex-wrap animate-fade-in">
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 animate-fade-in">
+          <div className="flex flex-wrap gap-2">
             <StatCard label="Common" value={result.stats.common} />
+
             <StatCard
               label="Added"
               value={result.stats.added}
               variant="success"
             />
+
             <StatCard
               label="Removed"
               value={result.stats.removed}
               variant="danger"
             />
+
             <StatCard
               label="Similarity"
               value={`${result.stats.similarity}%`}
             />
           </div>
-          <div className="flex items-center gap-3 text-sm text-neutral-500">
+
+          <div className="flex flex-wrap items-center gap-3 text-sm text-neutral-500">
             <span className="flex items-center gap-1.5">
-              <Badge variant="success">added</Badge> in B
+              <Badge variant="success">added</Badge>
+              in B
             </span>
+
             <span className="flex items-center gap-1.5">
-              <Badge variant="danger">removed</Badge> from A
+              <Badge variant="danger">removed</Badge>
+              from A
             </span>
           </div>
         </div>
       )}
 
-      {/* Side-by-side diff panels */}
+      {/* Diff Panels */}
       {result && (
-        <div className="flex border border-neutral-800 rounded-xl overflow-hidden divide-x divide-neutral-800">
+        <div
+          className="
+            grid
+            grid-cols-1
+            2xl:grid-cols-2
+            border border-neutral-800
+            rounded-2xl
+            overflow-hidden
+            2xl:divide-x
+            divide-neutral-800
+          "
+        >
           <DiffPanel
             label="Model A"
             modelLabel={labelA}
             tokens={result?.diffA ?? []}
             isEmpty={!result}
           />
+
           <DiffPanel
             label="Model B"
             modelLabel={labelB}

@@ -17,9 +17,9 @@ export default function App() {
       {/* ── Main content area ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Slim topbar — breadcrumb only */}
-        <header className="h-14 flex items-center px-6 border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur-md shrink-0">
+        <header className="ml-10 md:ml-0 h-14 flex items-center px-6 border-b border-neutral-800/80 bg-neutral-950/90 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-2 text-md">
-            <span className="text-neutral-600">kairo</span>
+            <span className="text-neutral-600">Kairo</span>
             <span className="text-neutral-700">/</span>
             <span className="text-neutral-200 font-medium capitalize">
               {tab}

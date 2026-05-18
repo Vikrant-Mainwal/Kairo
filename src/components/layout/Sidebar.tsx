@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Zap,
   Plus,
@@ -10,10 +10,11 @@ import {
   Cpu,
   ArrowLeftToLine,
   ArrowRightToLine,
+  Menu,
+  X,
 } from "lucide-react";
-import type { TabId } from "../../types";
 
-// ─── Dummy chat history data ──────────────────────────────────
+import type { TabId } from "../../types";
 
 interface ChatEntry {
   id: string;
@@ -40,81 +41,24 @@ const HISTORY_TODAY: ChatEntry[] = [
     timestamp: "12 min ago",
     model: "Haiku 4.5",
   },
-  {
-    id: "c3",
-    title: "Haiku about distributed systems",
-    preview: "Nodes drift apart, yet...",
-    timestamp: "1 hr ago",
-    model: "Sonnet 4",
-  },
-  {
-    id: "c4",
-    title: "CAP theorem breakdown",
-    preview: "In a distributed system you can only...",
-    timestamp: "3 hr ago",
-    model: "Llama 3.3",
-  },
 ];
 
 const HISTORY_YESTERDAY: ChatEntry[] = [
   {
-    id: "c5",
+    id: "c3",
     title: "LCS algorithm implementation",
     preview: "The longest common subsequence...",
     timestamp: "Yesterday",
     model: "Sonnet 4",
-    starred: true,
-  },
-  {
-    id: "c6",
-    title: "Concurrency vs parallelism",
-    preview: "Concurrency is about dealing with...",
-    timestamp: "Yesterday",
-    model: "Haiku 4.5",
-  },
-  {
-    id: "c7",
-    title: "Docker multi-stage builds",
-    preview: "Using multi-stage builds reduces...",
-    timestamp: "Yesterday",
-    model: "Mixtral 8x7B",
   },
 ];
 
 const HISTORY_OLDER: ChatEntry[] = [
   {
-    id: "c8",
+    id: "c4",
     title: "TypeScript generics deep dive",
     preview: "Generic types allow you to write...",
     timestamp: "Mon",
-    model: "Sonnet 4",
-  },
-  {
-    id: "c9",
-    title: "React Suspense patterns",
-    preview: "Suspense lets you declaratively...",
-    timestamp: "Mon",
-    model: "Sonnet 4",
-  },
-  {
-    id: "c10",
-    title: "Tailwind dark mode setup",
-    preview: "The darkMode config in tailwind...",
-    timestamp: "Sun",
-    model: "Haiku 4.5",
-  },
-  {
-    id: "c11",
-    title: "Vite vs Webpack comparison",
-    preview: "Vite uses native ES modules in dev...",
-    timestamp: "Sat",
-    model: "Llama 3.3",
-  },
-  {
-    id: "c12",
-    title: "AbortController in fetch",
-    preview: "AbortController lets you cancel...",
-    timestamp: "Fri",
     model: "Sonnet 4",
   },
 ];
@@ -132,8 +76,6 @@ const NAV_ITEMS: NavItem[] = [
   { id: "docs", label: "Docs", icon: BookOpen },
 ];
 
-// Sub-components
-
 function ChatRow({
   entry,
   active,
@@ -145,7 +87,6 @@ function ChatRow({
   collapsed: boolean;
   onClick: () => void;
 }) {
-  
   if (collapsed) {
     return (
       <button
@@ -155,7 +96,7 @@ function ChatRow({
           active ? "bg-neutral-700" : "hover:bg-neutral-800"
         }`}
       >
-        <MessageSquare className="w-3.5 h-3.5 text-neutral-400 shrink-0" />
+        <MessageSquare className="w-4 h-4 text-neutral-400 shrink-0" />
       </button>
     );
   }
@@ -167,42 +108,14 @@ function ChatRow({
         active ? "bg-neutral-800" : "hover:bg-neutral-800/60"
       }`}
     >
-      <MessageSquare
-        className="w-3.5 h-3.5 text-neutral-500 shrink-0 mt-0.5"
-        aria-hidden="true"
-      />
+      <MessageSquare className="w-4 h-4 text-neutral-500 shrink-0 mt-0.5" />
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-1">
           <span className="text-sm font-medium text-neutral-200 truncate">
             {entry.title}
           </span>
-          {/* {entry.starred && !hovering && (
-            <Star
-              className="w-2.5 h-2.5 text-kairo-400 shrink-0 fill-current"
-              aria-hidden="true"
-            />
-          )}
-          {hovering && (
-            <div className="flex items-center gap-0.5 shrink-0">
-              <span className="p-0.5 rounded hover:bg-neutral-700 text-neutral-500 hover:text-neutral-300 transition-colors">
-                <MoreHorizontal className="w-3 h-3" />
-              </span>
-              <span className="p-0.5 rounded hover:bg-neutral-700 text-neutral-500 hover:text-red-400 transition-colors">
-                <Trash2 className="w-3 h-3" />
-              </span>
-            </div>
-          )} */}
         </div>
-        {/* <p className="text-[11px] text-neutral-500 truncate mt-0.5">
-          {entry.preview}
-        </p> */}
-        {/* <div className="flex items-center gap-1.5 mt-1">
-          <span className="text-[10px] text-neutral-600">
-            {entry.timestamp}
-          </span>
-          <span className="text-[10px] text-neutral-700">·</span>
-          <span className="text-[10px] text-neutral-600">{entry.model}</span>
-        </div> */}
       </div>
     </button>
   );
@@ -242,6 +155,7 @@ function HistoryGroup({
       <p className="px-2.5 mb-1 text-[10px] uppercase tracking-widest text-neutral-600 font-medium">
         {label}
       </p>
+
       <div className="space-y-0.5">
         {entries.map((e) => (
           <ChatRow
@@ -257,8 +171,6 @@ function HistoryGroup({
   );
 }
 
-// Main Sidebar
-
 interface SidebarProps {
   activeTab: TabId;
   onTabChange: (tab: TabId) => void;
@@ -267,10 +179,31 @@ interface SidebarProps {
 export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [activeChat, setActiveChat] = useState<string | null>("c1");
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const allHistory = [...HISTORY_TODAY, ...HISTORY_YESTERDAY, ...HISTORY_OLDER];
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  const allHistory = [
+    ...HISTORY_TODAY,
+    ...HISTORY_YESTERDAY,
+    ...HISTORY_OLDER,
+  ];
+
   const filtered = searchQuery
     ? allHistory.filter(
         (e) =>
@@ -279,268 +212,250 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       )
     : null;
 
+  const handleTabChange = (tab: TabId) => {
+    onTabChange(tab);
+
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
+  const handleChatSelect = (id: string) => {
+    setActiveChat(id);
+
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  };
+
   return (
-    <aside
-      aria-label="Sidebar"
-      className={`
-        relative flex flex-col h-screen border-r border-neutral-800 bg-neutral-950
-        transition-all duration-200 ease-in-out shrink-0
-        ${collapsed ? "w-14" : "w-60"}
-      `}
-    >
-      {/* ── Top: logo + new chat ── */}
-      <div
-        className={`flex items-center h-14 border-b border-neutral-800/80 shrink-0 ${collapsed ? "justify-center px-2" : "justify-between px-3"}`}
+    <>
+      {/* Mobile Menu Button */}
+      {isMobile && !mobileOpen && (
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="fixed top-3 left-4 z-60 p-2 rounded-lg bg-neutral-900 border border-neutral-700 text-white md:hidden"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
+
+      {/* Backdrop */}
+      {isMobile && mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <aside
+        aria-label="Sidebar"
+        className={`
+          fixed md:relative top-0 left-0 z-50
+          flex flex-col h-dvh border-r border-neutral-800 bg-neutral-950
+          transition-all duration-300 ease-in-out shrink-0
+
+          ${
+            collapsed
+              ? "md:w-16"
+              : "md:w-64"
+          }
+
+          ${
+            isMobile
+              ? mobileOpen
+                ? "translate-x-0 w-[85vw] max-w-[280px]"
+                : "-translate-x-full w-[85vw] max-w-[280px]"
+              : "translate-x-0"
+          }
+        `}
       >
-        {!collapsed && (
-          <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg bg-kairo-600 shadow-lg shadow-kairo-500/30 shrink-0">
-              <Zap className="w-4 h-4 text-white" aria-hidden="true" />
+        {/* Top */}
+        <div
+          className={`flex items-center h-14 border-b border-neutral-800/80 shrink-0 ${
+            collapsed
+              ? "justify-center px-2"
+              : "justify-between px-3"
+          }`}
+        >
+          {!collapsed && (
+            <div className="flex items-center gap-2.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-kairo-600 shadow-lg shadow-kairo-500/30 shrink-0">
+                <Zap className="w-4 h-4 text-white" />
+              </div>
+
+              <span className="font-bold text-white tracking-tight text-lg">
+                Kairo
+              </span>
             </div>
-            <span className="font-bold text-white tracking-tight text-lg">
-              Kairo
-            </span>
-          </div>
-        )}
-        {collapsed && (
-          <div className="relative group">
-            <div
-              className="flex items-center justify-center w-7 h-7 rounded-lg bg-kairo-600 group-hover:w-8 group-hover:h-8 group-hover:rounded-full group-hover:bg-neutral-800 group-hover:border group-hover:border-neutral-700 group-hover:text-neutral-100 hover:bg-neutral-700 shadow-lg shadow-kairo-500/30 cursor-pointer overflow-hidden px-2"
-              onClick={() => setCollapsed((c) => !c)}
+          )}
+
+          {/* Mobile Close */}
+          {isMobile ? (
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="p-2 rounded-lg hover:bg-neutral-800 text-neutral-300"
             >
-              {/* Logo */}
-              <Zap
-                className="w-4 h-4 text-white transition-all duration-300 group-hover:opacity-0 group-hover:-translate-x-2"
-                aria-hidden="true"
-              />
+              <X className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              onClick={() => setCollapsed((c) => !c)}
+              className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700 transition-colors"
+            >
+              {collapsed ? (
+                <ArrowRightToLine className="w-4 h-4" />
+              ) : (
+                <ArrowLeftToLine className="w-4 h-4" />
+              )}
+            </button>
+          )}
+        </div>
 
-              {/* Arrow */}
-              <ArrowRightToLine
-                className="absolute w-4 h-4 text-white opacity-0 -translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0"
-                aria-hidden="true"
-              />
-            </div>
-          </div>
-        )}
-        {!collapsed && (
-          <button
-            onClick={() => setCollapsed((c) => !c)}
-            aria-label={!collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700 transition-colors shadow-lg"
-          >
-            {!collapsed ? (
-              <ArrowLeftToLine className="w-4 h-4" aria-hidden="true" />
-            ) : (
-              <ArrowRightToLine className="w-4 h-4" aria-hidden="true" />
-            )}
-          </button>
-        )}
-      </div>
-
-      {/* ── Nav items ── */}
-      <div
-        className={`${collapsed ? "px-2 py-2" : "px-2 py-2"} shrink-0 border-b border-neutral-800/60`}
-      >
-        {collapsed ? (
-          <div className="space-y-0.5">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  title={item.label}
-                  aria-label={item.label}
-                  className={`w-full flex items-center justify-center p-2 rounded-lg transition-colors ${
-                    activeTab === item.id
-                      ? "bg-neutral-800 text-kairo-400"
-                      : "text-neutral-500 hover:text-neutral-200 hover:bg-neutral-800/60"
-                  }`}
-                >
-                  <Icon className="w-5 h-5" aria-hidden="true" />
-                </button>
-              );
-            })}
-          </div>
-        ) : (
+        {/* Navigation */}
+        <div className="px-2 py-2 shrink-0 border-b border-neutral-800/60">
           <div className="space-y-2">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
+
               return (
                 <button
                   key={item.id}
-                  onClick={() => onTabChange(item.id)}
-                  aria-current={activeTab === item.id ? "page" : undefined}
-                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-left text-sm font-medium transition-colors ${
+                  onClick={() => handleTabChange(item.id)}
+                  className={`w-full flex items-center ${
+                    collapsed && !isMobile
+                      ? "justify-center"
+                      : "gap-2.5"
+                  } px-2.5 py-2 rounded-lg text-left text-sm font-medium transition-colors ${
                     activeTab === item.id
                       ? "bg-neutral-800 text-neutral-100"
                       : "text-neutral-500 hover:text-neutral-200 hover:bg-neutral-800/50"
                   }`}
                 >
                   <Icon
-                    className={`w-5 h-5 shrink-0 ${activeTab === item.id ? "text-kairo-400" : ""}`}
-                    aria-hidden="true"
+                    className={`w-5 h-5 shrink-0 ${
+                      activeTab === item.id
+                        ? "text-kairo-400"
+                        : ""
+                    }`}
                   />
-                  {item.label}
+
+                  {(!collapsed || isMobile) && item.label}
                 </button>
               );
             })}
           </div>
-        )}
-      </div>
-
-      {/* ── Search ── */}
-      {!collapsed && (
-        <div className="px-2 pt-3 pb-1 shrink-0">
-          {searchOpen ? (
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-neutral-900 border border-neutral-700 rounded-lg">
-              <Search
-                className="w-3 h-3 text-neutral-500 shrink-0"
-                aria-hidden="true"
-              />
-              <input
-                autoFocus
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === "Escape" &&
-                  (setSearchOpen(false), setSearchQuery(""))
-                }
-                placeholder="Search chats…"
-                className="flex-1 bg-transparent text-sm text-neutral-200 placeholder-neutral-600 outline-none"
-                aria-label="Search chat history"
-              />
-            </div>
-          ) : (
-            <button
-              onClick={() => setSearchOpen(true)}
-              className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-lg text-sm text-neutral-600 hover:text-neutral-400 hover:bg-neutral-800/50 transition-colors"
-            >
-              <Search className="w-3 h-3" aria-hidden="true" />
-              Search chats…
-            </button>
-          )}
         </div>
-      )}
 
-      {/* ── Chat history (scrollable) ── */}
-      <nav
-        aria-label="Chat history"
-        className={`flex-1 overflow-y-auto px-2 py-2 space-y-4 min-h-0 ${collapsed ? "invisible" : "md:block"}`}
-      >
-        {collapsed ? (
-          /* Collapsed: just icons */
-          <div className="space-y-0.5">
-            {allHistory.map((e) => (
-              <ChatRow
-                key={e.id}
-                entry={e}
-                active={activeChat === e.id}
-                collapsed={true}
-                onClick={() => setActiveChat(e.id)}
-              />
-            ))}
-          </div>
-        ) : filtered ? (
-          /* Search results */
-          filtered.length === 0 ? (
-            <p className="px-2.5 text-sm text-neutral-600 mt-2">
-              No results for "{searchQuery}"
-            </p>
-          ) : (
-            <div className="space-y-0.5">
-              {filtered.map((e) => (
-                <ChatRow
-                  key={e.id}
-                  entry={e}
-                  active={activeChat === e.id}
-                  collapsed={false}
-                  onClick={() => setActiveChat(e.id)}
+        {/* Search */}
+        {(!collapsed || isMobile) && (
+          <div className="px-2 pt-3 pb-1 shrink-0">
+            {searchOpen ? (
+              <div className="flex items-center gap-1.5 px-2.5 py-2 bg-neutral-900 border border-neutral-700 rounded-lg">
+                <Search className="w-4 h-4 text-neutral-500 shrink-0" />
+
+                <input
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) =>
+                    e.key === "Escape" &&
+                    (setSearchOpen(false), setSearchQuery(""))
+                  }
+                  placeholder="Search chats..."
+                  className="flex-1 bg-transparent text-sm text-neutral-200 placeholder-neutral-600 outline-none"
                 />
-              ))}
-            </div>
-          )
-        ) : (
-          /* Grouped history */
-          <>
-            <HistoryGroup
-              label="Today"
-              entries={HISTORY_TODAY}
-              activeChat={activeChat}
-              collapsed={false}
-              onSelect={setActiveChat}
-            />
-            <HistoryGroup
-              label="Yesterday"
-              entries={HISTORY_YESTERDAY}
-              activeChat={activeChat}
-              collapsed={false}
-              onSelect={setActiveChat}
-            />
-            <HistoryGroup
-              label="This week"
-              entries={HISTORY_OLDER}
-              activeChat={activeChat}
-              collapsed={false}
-              onSelect={setActiveChat}
-            />
-          </>
-        )}
-      </nav>
-
-      {/* ── Bottom: settings + github ── */}
-      <div
-        className={`shrink-0 border-t border-neutral-800/80 py-2 ${collapsed ? "px-2" : "px-2"}`}
-      >
-        {collapsed ? (
-          <div className="space-y-0.5">
-            <button
-              title="Settings"
-              aria-label="Settings"
-              className="w-full flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800 transition-colors"
-            >
-              <Settings className="w-5 h-5" aria-hidden="true" />
-            </button>
-            {/* <a
-              href="https://github.com/Vikrant-Mainwal/Kairo"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="GitHub"
-              aria-label="GitHub"
-              className="w-full flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800 transition-colors"
-            >
-              <Github className="w-4 h-4" aria-hidden="true" /> 
-            </a> */}
-            <div className="flex items-center justify-center gap-2.5 px-2.5 py-2 mt-1 rounded-lg bg-neutral-900 border border-neutral-800">
-              <div className="w-6 h-6 rounded-full bg-kairo-600 flex items-center justify-center shrink-0">
-                <span className="text-[10px] font-semibold text-white">K</span>
               </div>
-            </div>
+            ) : (
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-sm text-neutral-600 hover:text-neutral-400 hover:bg-neutral-800/50 transition-colors"
+              >
+                <Search className="w-4 h-4" />
+                Search chats...
+              </button>
+            )}
           </div>
-        ) : (
-          <div className="space-y-0.5">
-            <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors">
-              <Settings className="w-5 h-5 shrink-0" aria-hidden="true" />
-              Settings
-            </button>
-            
-            {/* User badge */}
-            <div className="flex items-center gap-2.5 px-2.5 py-2 mt-1 rounded-lg bg-neutral-900 border border-neutral-800">
-              <div className="w-6 h-6 rounded-full bg-kairo-600 flex items-center justify-center shrink-0">
-                <span className="text-[10px] font-semibold text-white">K</span>
+        )}
+
+        {/* Chat History */}
+        <nav className="flex-1 overflow-y-auto px-2 py-2 space-y-4 min-h-0">
+          {filtered ? (
+            filtered.length === 0 ? (
+              <p className="px-2.5 text-sm text-neutral-600">
+                No results found
+              </p>
+            ) : (
+              <div className="space-y-0.5">
+                {filtered.map((e) => (
+                  <ChatRow
+                    key={e.id}
+                    entry={e}
+                    active={activeChat === e.id}
+                    collapsed={collapsed && !isMobile}
+                    onClick={() => handleChatSelect(e.id)}
+                  />
+                ))}
               </div>
+            )
+          ) : (
+            <>
+              <HistoryGroup
+                label="Today"
+                entries={HISTORY_TODAY}
+                activeChat={activeChat}
+                collapsed={collapsed && !isMobile}
+                onSelect={handleChatSelect}
+              />
+
+              <HistoryGroup
+                label="Yesterday"
+                entries={HISTORY_YESTERDAY}
+                activeChat={activeChat}
+                collapsed={collapsed && !isMobile}
+                onSelect={handleChatSelect}
+              />
+
+              <HistoryGroup
+                label="This week"
+                entries={HISTORY_OLDER}
+                activeChat={activeChat}
+                collapsed={collapsed && !isMobile}
+                onSelect={handleChatSelect}
+              />
+            </>
+          )}
+        </nav>
+
+        {/* Bottom */}
+        <div className="shrink-0 border-t border-neutral-800/80 p-2">
+          <button className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors">
+            <Settings className="w-5 h-5 shrink-0" />
+
+            {(!collapsed || isMobile) && "Settings"}
+          </button>
+
+          {(!collapsed || isMobile) && (
+            <div className="flex items-center gap-2.5 px-2.5 py-2 mt-2 rounded-lg bg-neutral-900 border border-neutral-800">
+              <div className="w-7 h-7 rounded-full bg-kairo-600 flex items-center justify-center shrink-0">
+                <span className="text-xs font-semibold text-white">
+                  K
+                </span>
+              </div>
+
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-neutral-200 truncate">
                   Kairo User
                 </p>
+
                 <p className="text-[10px] text-neutral-600 truncate">
                   Free plan
                 </p>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </aside>
+          )}
+        </div>
+      </aside>
+    </>
   );
 }
