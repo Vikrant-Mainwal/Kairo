@@ -1,4 +1,4 @@
-import { Loader2, Mic, MicOff, Square } from "lucide-react";
+import { Loader2, Mic, Square } from "lucide-react";
 import { useAudioRecorder } from "../../hooks/useAudioRecorder";
 import { Button } from "../ui/Button";
 
@@ -7,7 +7,7 @@ interface AudioInputProps {
 }
 
 export function AudioInput({ onTranscript }: AudioInputProps) {
-  const { state, error, startRecording, stopRecording, reset } =
+  const { state, error, startRecording, stopRecording } =
     useAudioRecorder(onTranscript);
 
   return (

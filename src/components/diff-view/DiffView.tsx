@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import {
   MODELS,

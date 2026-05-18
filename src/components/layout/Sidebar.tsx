@@ -7,10 +7,7 @@ import {
   BookOpen,
   Settings,
   Search,
-  Trash2,
-  MoreHorizontal,
   Cpu,
-  Star,
   ArrowLeftToLine,
   ArrowRightToLine,
 } from "lucide-react";
@@ -150,7 +147,7 @@ function ChatRow({
   collapsed: boolean;
   onClick: () => void;
 }) {
-  const [hovering, setHovering] = useState(false);
+  
 
   if (collapsed) {
     return (
@@ -169,8 +166,6 @@ function ChatRow({
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setHovering(true)}
-      onMouseLeave={() => setHovering(false)}
       className={`w-full group flex items-start gap-2.5 px-2.5 py-2 rounded-lg text-left transition-colors ${
         active ? "bg-neutral-800" : "hover:bg-neutral-800/60"
       }`}
