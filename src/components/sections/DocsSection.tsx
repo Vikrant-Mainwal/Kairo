@@ -149,29 +149,29 @@ Partial output preservation rule:
   },
   {
     title: "Project architecture",
-    content: `src/
- ├── components/
- │    ├── playground/     # Playground, AudioInput, StreamOutput
- │    ├── diff-view/      # DiffView, DiffPanel
- │    ├── metrics/        # MetricsBar
- │    ├── ui/             # Button, Select, Badge (reusable primitives)
- │    ├── layout/         # Navbar
- │    └── sections/       # HeroSection, DocsSection
- │
- ├── hooks/
- │    ├── useStreaming.ts  # SSE stream manager with AbortController
- │    ├── useMetrics.ts   # Live TPS/elapsed/token metrics
- │    └── useAudioRecorder.ts  # MediaRecorder wrapper
- │
- ├── utils/
- │    ├── diff.ts         # LCS matrix + reconstruction
- │    ├── tokenizer.ts    # Word+whitespace tokenizer
- │    └── cn.ts           # className merger
- │
- ├── services/
- │    └── models.ts       # Model list + sample prompts
- │
- └── types/index.ts      # All shared TypeScript types`,
+    content: `  src/
+                  ├── components/
+                  │    ├── playground/     # Playground, AudioInput, StreamOutput
+                  │    ├── diff-view/      # DiffView, DiffPanel
+                  │    ├── metrics/        # MetricsBar
+                  │    ├── ui/             # Button, Select, Badge (reusable primitives)
+                  │    ├── layout/         # Navbar
+                  │    └── sections/       # HeroSection, DocsSection
+                  │
+                  ├── hooks/
+                  │    ├── useStreaming.ts  # SSE stream manager with AbortController
+                  │    ├── useMetrics.ts   # Live TPS/elapsed/token metrics
+                  │    └── useAudioRecorder.ts  # MediaRecorder wrapper
+                  │
+                  ├── utils/
+                  │    ├── diff.ts         # LCS matrix + reconstruction
+                  │    ├── tokenizer.ts    # Word+whitespace tokenizer
+                  │    └── cn.ts           # className merger
+                  │
+                  ├── services/
+                  │    └── models.ts       # Model list + sample prompts
+                  │
+                  └── types/index.ts      # All shared TypeScript types`,
   },
 ];
 

@@ -11,8 +11,8 @@ import { DiffPanel } from "./DiffPanel";
 import { Select } from "../ui/Select";
 import { Badge } from "../ui/Badge";
 import type { DiffResult } from "../../types";
-import ChatInput from "../ui/ChatInput";
-import { StreamOutput } from "../playground/StreamOutput";
+import ChatInput from "../shared/ChatInput";
+import { StreamOutput } from "../shared/StreamOutput";
 import { useAudioRecorder } from "../../hooks/useAudioRecorder";
 import { MetricsBar } from "../metrics/MetricsBar";
 

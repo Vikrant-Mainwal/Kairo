@@ -11,9 +11,9 @@ import {
 } from "../../services/models";
 
 import { MetricsBar } from "../metrics/MetricsBar";
-import { StreamOutput } from "./StreamOutput";
+import { StreamOutput } from "../shared/StreamOutput";
 import { Select } from "../ui/Select";
-import ChatInput from "../ui/ChatInput";
+import ChatInput from "../shared/ChatInput";
 
 export function Playground() {
   const [prompt, setPrompt] = useState("");
@@ -300,7 +300,7 @@ export function Playground() {
         role="group"
         aria-label="Sample prompts"
       >
-        {SAMPLE_PROMPTS.slice(0, 6).map((sp) => (
+        {SAMPLE_PROMPTS.slice(0, 3).map((sp) => (
           <button
             key={sp}
             onClick={() => setPrompt(sp)}
