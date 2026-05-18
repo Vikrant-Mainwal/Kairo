@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import { Play, ChevronDown, ChevronRight } from "lucide-react";
+import {  ChevronDown, ChevronRight } from "lucide-react";
 import { useStreaming } from "../../hooks/useStreaming";
 import {
   MODELS,
@@ -9,7 +9,7 @@ import {
 import { MetricsBar } from "../metrics/MetricsBar";
 import { AudioInput } from "./AudioInput";
 import { StreamOutput } from "./StreamOutput";
-import { Button } from "../ui/Button";
+// import { Button } from "../ui/Button";
 import { Select } from "../ui/Select";
 import type { InputMode } from "../../types";
 import ChatInput from "../ui/ChatInput";
@@ -38,7 +38,6 @@ export function Playground() {
       model: req.model,
       systemPrompt: req.systemPrompt,
     });
-    
   }, [prompt, model, systemPrompt, streaming, stream]);
 
   const handleRetry = useCallback(async () => {
@@ -161,29 +160,13 @@ export function Playground() {
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={handleKeyDown}
+            onSend={handleRun}
             aria-label="Prompt input"
-            placeholder="Enter your prompt… (⌘↵ to run)"
+            placeholder="Message AI..."
             rows={1}
             streaming={streaming}
           />
-          {/* <textarea
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            onKeyDown={handleKeyDown}
-            aria-label="Prompt input"
-            placeholder="Enter your prompt… (⌘↵ to run)"
-            rows={5}
-            disabled={streaming}
-            className={[
-              'w-full rounded-xl border px-4 py-3 text-md text-neutral-200',
-              'placeholder-neutral-600 font-sans leading-relaxed resize-y',
-              'focus:outline-none focus:ring-2 focus:ring-kairo-500/40 focus:border-kairo-500/40',
-              'transition-colors resize-none ',
-              streaming
-                ? 'bg-neutral-900/50 border-neutral-800 cursor-not-allowed'
-                : 'bg-neutral-900 border-neutral-700 hover:border-neutral-600',
-            ].join(' ')}
-          /> */}
+          
         </div>
       ) : (
         <AudioInput
@@ -191,19 +174,8 @@ export function Playground() {
         />
       )}
 
-      {/* Action bar */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <Button
-          onClick={handleRun}
-          disabled={!prompt.trim() || streaming}
-          loading={streaming}
-          variant="primary"
-          size="md"
-          aria-busy={streaming}
-        >
-          <Play className="w-3.5 h-3.5" aria-hidden="true" />
-          {streaming ? "Streaming…" : "Run"}
-        </Button>
+      {/* Metrics bar */}
+       <div className="flex items-center justify-end gap-3 flex-wrap"> 
         <MetricsBar metrics={metrics} streaming={streaming} />
       </div>
 

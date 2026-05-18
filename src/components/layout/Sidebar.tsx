@@ -137,7 +137,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "docs", label: "Docs", icon: BookOpen },
 ];
 
-// ─── Sub-components ───────────────────────────────────────────
+// ─── Sub-components
 
 function ChatRow({
   entry,
@@ -184,7 +184,7 @@ function ChatRow({
           <span className="text-sm font-medium text-neutral-200 truncate">
             {entry.title}
           </span>
-          {entry.starred && !hovering && (
+          {/* {entry.starred && !hovering && (
             <Star
               className="w-2.5 h-2.5 text-kairo-400 shrink-0 fill-current"
               aria-hidden="true"
@@ -199,18 +199,18 @@ function ChatRow({
                 <Trash2 className="w-3 h-3" />
               </span>
             </div>
-          )}
+          )} */}
         </div>
-        <p className="text-[11px] text-neutral-500 truncate mt-0.5">
+        {/* <p className="text-[11px] text-neutral-500 truncate mt-0.5">
           {entry.preview}
-        </p>
-        <div className="flex items-center gap-1.5 mt-1">
+        </p> */}
+        {/* <div className="flex items-center gap-1.5 mt-1">
           <span className="text-[10px] text-neutral-600">
             {entry.timestamp}
           </span>
           <span className="text-[10px] text-neutral-700">·</span>
           <span className="text-[10px] text-neutral-600">{entry.model}</span>
-        </div>
+        </div> */}
       </div>
     </button>
   );
@@ -231,7 +231,7 @@ function HistoryGroup({
 }) {
   if (collapsed) {
     return (
-      <div className="space-y-0.5">
+      <div className="space-y-1">
         {entries.map((e) => (
           <ChatRow
             key={e.id}
@@ -265,7 +265,7 @@ function HistoryGroup({
   );
 }
 
-// ─── Main Sidebar ─────────────────────────────────────────────
+// Main Sidebar
 
 interface SidebarProps {
   activeTab: TabId;
@@ -313,7 +313,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         {collapsed && (
           <div className="relative group">
             <div
-              className="flex items-center justify-center w-7 h-7 rounded-lg bg-kairo-600 group-hover:w-6 group-hover:h-6 group-hover:rounded-full group-hover:bg-neutral-800 group-hover:border group-hover:border-neutral-700 group-hover:text-neutral-100 hover:bg-neutral-700 shadow-lg shadow-kairo-500/30 cursor-pointer overflow-hidden px-2"
+              className="flex items-center justify-center w-7 h-7 rounded-lg bg-kairo-600 group-hover:w-8 group-hover:h-8 group-hover:rounded-full group-hover:bg-neutral-800 group-hover:border group-hover:border-neutral-700 group-hover:text-neutral-100 hover:bg-neutral-700 shadow-lg shadow-kairo-500/30 cursor-pointer overflow-hidden px-2"
               onClick={() => setCollapsed((c) => !c)}
             >
               {/* Logo */}
@@ -334,12 +334,12 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           <button
             onClick={() => setCollapsed((c) => !c)}
             aria-label={!collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            className="z-10 flex items-center justify-center w-6 h-6 rounded-full bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700 transition-colors shadow-lg"
+            className="z-10 flex items-center justify-center w-8 h-8 rounded-full bg-neutral-800 border border-neutral-700 text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700 transition-colors shadow-lg"
           >
             {!collapsed ? (
-              <ArrowLeftToLine className="w-3 h-3" aria-hidden="true" />
+              <ArrowLeftToLine className="w-4 h-4" aria-hidden="true" />
             ) : (
-              <ArrowRightToLine className="w-3 h-3" aria-hidden="true" />
+              <ArrowRightToLine className="w-4 h-4" aria-hidden="true" />
             )}
           </button>
         )}
@@ -371,7 +371,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             })}
           </div>
         ) : (
-          <div className="space-y-0.5">
+          <div className="space-y-2">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               return (
@@ -509,7 +509,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
             >
               <Settings className="w-4 h-4" aria-hidden="true" />
             </button>
-            <a
+            {/* <a
               href="https://github.com/Vikrant-Mainwal/Kairo"
               target="_blank"
               rel="noopener noreferrer"
@@ -517,9 +517,9 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               aria-label="GitHub"
               className="w-full flex items-center justify-center p-2 rounded-lg text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800 transition-colors"
             >
-              {/* <Github className="w-4 h-4" aria-hidden="true" /> */}
-            </a>
-            <div className="flex items-center gap-2.5 px-2.5 py-2 mt-1 rounded-lg bg-neutral-900 border border-neutral-800">
+              <Github className="w-4 h-4" aria-hidden="true" /> 
+            </a> */}
+            <div className="flex items-center justify-center gap-2.5 px-2.5 py-2 mt-1 rounded-lg bg-neutral-900 border border-neutral-800">
               <div className="w-6 h-6 rounded-full bg-kairo-600 flex items-center justify-center shrink-0">
                 <span className="text-[10px] font-semibold text-white">K</span>
               </div>
@@ -531,15 +531,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               <Settings className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
               Settings
             </button>
-            <a
-              href="https://github.com/Vikrant-Mainwal/Kairo"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm text-neutral-500 hover:text-neutral-300 hover:bg-neutral-800/50 transition-colors"
-            >
-              {/* <Github className="w-3.5 h-3.5 shrink-0" aria-hidden="true" /> */}
-              GitHub
-            </a>
+            
             {/* User badge */}
             <div className="flex items-center gap-2.5 px-2.5 py-2 mt-1 rounded-lg bg-neutral-900 border border-neutral-800">
               <div className="w-6 h-6 rounded-full bg-kairo-600 flex items-center justify-center shrink-0">
@@ -547,7 +539,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-neutral-200 truncate">
-                  kairo user
+                  Kairo User
                 </p>
                 <p className="text-[10px] text-neutral-600 truncate">
                   Free plan

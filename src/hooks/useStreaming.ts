@@ -2,8 +2,7 @@ import { useReducer, useRef, useCallback } from "react";
 import { useMetrics } from "./useMetrics";
 import type { StreamState, StreamMetrics } from "../types";
 
-// ─── State machine ────────────────────────────────────────────
-
+// ─── State machine
 type StreamAction =
   | { type: "START" }
   | { type: "APPEND"; chunk: string }
@@ -35,7 +34,7 @@ const INITIAL_STATE: StreamState = {
   error: null,
 };
 
-// ─── Hook ────────────────────────────────────────────────────
+// ─── Hook
 
 export interface UseStreamingOptions {
   model: string;
@@ -44,7 +43,7 @@ export interface UseStreamingOptions {
 
 export interface UseStreamingReturn extends StreamState {
   metrics: StreamMetrics;
-  stream: (prompt: string, options: UseStreamingOptions) => Promise<void>;
+  stream: (prompt: string, options: UseStreamingOptions) => Promise<string>;
   abort: () => void;
   reset: () => void;
 }
@@ -69,7 +68,7 @@ export function useStreaming(): UseStreamingReturn {
   console.log(import.meta.env.VITE_GROQ_API_KEY);
 
   const stream = useCallback(
-    async (prompt: string, options: UseStreamingOptions) => {
+    async (prompt: string, options: UseStreamingOptions): Promise<string> => {
       // Cancel any in-flight request
       if (abortRef.current) abortRef.current.abort();
       const controller = new AbortController();
@@ -118,6 +117,7 @@ export function useStreaming(): UseStreamingReturn {
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
+        let finalOutput = "";
 
         // Read the SSE stream chunk by chunk
         while (true) {
@@ -139,8 +139,10 @@ export function useStreaming(): UseStreamingReturn {
               };
               const delta = json.choices?.[0]?.delta?.content ?? "";
               if (delta) {
+                finalOutput += delta;
+
                 dispatch({ type: "APPEND", chunk: delta });
-                // Approximate token count: ~1 token per word
+
                 metricsHook.addTokens(
                   Math.max(1, Math.ceil(delta.split(/\s+/).length)),
                 );
@@ -153,32 +155,32 @@ export function useStreaming(): UseStreamingReturn {
 
         metricsHook.stop();
         dispatch({ type: "DONE" });
+
+        return finalOutput;
       } catch (err: unknown) {
         metricsHook.stop();
 
+        let message = "An unexpected error occurred.";
+
         if (err instanceof Error) {
           if (err.name === "AbortError") {
-            dispatch({
-              type: "ERROR",
-              error: "Stream aborted — partial output preserved.",
-            });
+            message = "Stream aborted — partial output preserved.";
           } else if (
             err.message.includes("Failed to fetch") ||
             err.message.includes("NetworkError")
           ) {
-            dispatch({
-              type: "ERROR",
-              error: "Network error. Check your connection and try again.",
-            });
+            message = "Network error. Check your connection and try again.";
           } else {
-            dispatch({
-              type: "ERROR",
-              error: err.message || "An unexpected error occurred.",
-            });
+            message = err.message;
           }
-        } else {
-          dispatch({ type: "ERROR", error: "An unexpected error occurred." });
         }
+
+        dispatch({
+          type: "ERROR",
+          error: message,
+        });
+
+        throw err;
       }
     },
     [metricsHook],
