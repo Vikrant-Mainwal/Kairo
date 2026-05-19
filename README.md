@@ -81,12 +81,12 @@ Designed with a clean developer-first experience inspired by modern AI interface
 src/
 ├── components/
 │   ├── ui/                 # Reusable UI components
-│   ├── playground/         # Playground & streaming UI
+│   ├── playground/         # Playground
 │   ├── diff-view/          # Token diff visualization
 │   ├── metrics/            # Metrics dashboard
 │   ├── layout/             # Sidebar & layout
-│   └── sections/           # App sections
-│
+│   ├── sections/           # App sections
+│   └── shared/             # Common components
 ├── hooks/
 │   ├── useStreaming.ts
 │   ├── useMetrics.ts
@@ -252,7 +252,7 @@ Push to GitHub and import the repo into Vercel.
 Create a `.env` file:
 
 ```env
-VITE_API_KEY=your_api_key
+GROQ_API_KEY=your_api_key
 ```
 
 ---
