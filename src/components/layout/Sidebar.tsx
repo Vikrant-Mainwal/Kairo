@@ -258,14 +258,14 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
           ${
             collapsed
               ? "md:w-16"
-              : "md:w-64"
+              : "md:w-70"
           }
 
           ${
             isMobile
               ? mobileOpen
-                ? "translate-x-0 w-[85vw] max-w-[280px]"
-                : "-translate-x-full w-[85vw] max-w-[280px]"
+                ? "translate-x-0 w-[85vw] max-w-70"
+                : "-translate-x-full w-[85vw] max-w-70"
               : "translate-x-0"
           }
         `}
