@@ -14,7 +14,6 @@ import type { DiffResult } from "../../types";
 import ChatInput from "../shared/ChatInput";
 import { StreamOutput } from "../shared/StreamOutput";
 import { useAudioRecorder } from "../../hooks/useAudioRecorder";
-import { MetricsBar } from "../metrics/MetricsBar";
 
 function StatCard({
   label,
@@ -343,7 +342,7 @@ export function DiffView() {
       {/* Output Panels */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2 min-w-0">
-          <div
+          {/* <div
             className="
                     flex
                     flex-wrap
@@ -354,7 +353,7 @@ export function DiffView() {
                   "
           >
             <MetricsBar metrics={metricsA} streaming={streamingA} />
-          </div>
+          </div> */}
 
           <label htmlFor="output-a" className="text-sm text-neutral-500">
             Model A: {labelA}
@@ -367,11 +366,12 @@ export function DiffView() {
             onRetry={handleCompare}
             onAbort={() => {}}
             onReset={() => {}}
+            metrics={metricsA}
           />
         </div>
 
         <div className="space-y-2 min-w-0">
-          <div
+          {/* <div
             className="
           flex
           flex-wrap
@@ -382,7 +382,7 @@ export function DiffView() {
         "
           >
             <MetricsBar metrics={metricsB} streaming={streamingB} />
-          </div>
+          </div> */}
           <label htmlFor="output-b" className="text-sm text-neutral-500">
             Model B: {labelB}
           </label>
@@ -394,6 +394,7 @@ export function DiffView() {
             onRetry={handleCompare}
             onAbort={() => {}}
             onReset={() => {}}
+            metrics={metricsB}
           />
         </div>
       </div>

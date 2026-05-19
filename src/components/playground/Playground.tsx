@@ -9,8 +9,6 @@ import {
   SAMPLE_PROMPTS,
   SAMPLE_SYSTEM_PROMPTS,
 } from "../../services/models";
-
-import { MetricsBar } from "../metrics/MetricsBar";
 import { StreamOutput } from "../shared/StreamOutput";
 import { Select } from "../ui/Select";
 import ChatInput from "../shared/ChatInput";
@@ -360,7 +358,7 @@ export function Playground() {
       </div>
 
       {/* Metrics */}
-      <div
+      {/* <div
         className="
           flex
           flex-wrap
@@ -374,7 +372,7 @@ export function Playground() {
           metrics={metrics}
           streaming={streaming}
         />
-      </div>
+      </div> */}
 
       {/* Output */}
       <div
@@ -390,6 +388,7 @@ export function Playground() {
           onRetry={handleRetry}
           onAbort={abort}
           onReset={reset}
+          metrics={metrics}
         />
       </div>
     </section>
