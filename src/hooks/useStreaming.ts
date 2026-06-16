@@ -76,9 +76,10 @@ export function useStreaming(): UseStreamingReturn {
       metricsHook.reset();
       metricsHook.start();
 
+      console.log(import.meta.env.VITE_BASE_URL);
       try {
         const response = await fetch(
-          `${import.meta.env.BASE_URL}/chat`,
+          `${import.meta.env.VITE_BASE_URL}/chat`,
           {
             method: "POST",
             headers: {

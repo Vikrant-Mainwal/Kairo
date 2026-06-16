@@ -11,7 +11,7 @@ export async function transcribeAudio(audioBlob: Blob) {
 
     formData.append("model", "whisper-large-v3-turbo");
 
-    const response = await fetch(`${import.meta.env.BASE_URL}/transcribe`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/transcribe`, {
       method: "POST",
       body: formData,
       // DO NOT set Content-Type manually — browser sets it with boundary
