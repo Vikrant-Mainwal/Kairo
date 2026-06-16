@@ -1,37 +1,32 @@
 export async function transcribeAudio(audioBlob: Blob) {
   try {
-    const formData = new FormData()
+    const formData = new FormData();
 
     formData.append(
-      'file',
-      new File([audioBlob], 'recording.webm', {
-        type: 'audio/webm',
-      })
-    )
+      "file",
+      new File([audioBlob], "recording.webm", {
+        type: "audio/webm",
+      }),
+    );
 
-    formData.append('model', 'whisper-large-v3-turbo')
+    formData.append("model", "whisper-large-v3-turbo");
 
-    const response = await fetch(
-      'https://api.groq.com/openai/v1/audio/transcriptions',
-      {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`,
-        },
-        body: formData,
-      }
-    )
+    const response = await fetch(`${import.meta.env.BASE_URL}/transcribe`, {
+      method: "POST",
+      body: formData,
+      // DO NOT set Content-Type manually — browser sets it with boundary
+    });
 
     if (!response.ok) {
-      throw new Error('Failed to transcribe audio')
+      throw new Error("Failed to transcribe audio");
     }
 
-    const data = await response.json()
+    const data = await response.json();
 
-    return data.text
+    return data.text;
   } catch (error) {
-    console.error(error)
-    return ''
+    console.error(error);
+    return "";
   }
 }
 // export async function transcribeAudio(audioBlob: Blob) {

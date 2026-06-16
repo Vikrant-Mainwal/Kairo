@@ -357,23 +357,6 @@ export function Playground() {
         </div>
       </div>
 
-      {/* Metrics */}
-      {/* <div
-        className="
-          flex
-          flex-wrap
-          items-center
-          justify-center
-          sm:justify-end
-          gap-3
-        "
-      >
-        <MetricsBar
-          metrics={metrics}
-          streaming={streaming}
-        />
-      </div> */}
-
       {/* Output */}
       <div
         className="

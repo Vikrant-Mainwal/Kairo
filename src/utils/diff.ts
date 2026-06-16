@@ -1,62 +1,8 @@
-/**
- * LCS-based token diff engine.
- *
- * ── Why LCS? ─────────────────────────────────────────────────────────────────
- * For AI model output comparison, we compare at the TOKEN level (words +
- * whitespace), not line level. This is because:
- *
- *  • AI outputs are often single paragraphs — no meaningful line boundaries.
- *  • A single rephrased sentence produces a full-line diff with line-based
- *    algorithms, losing all sub-sentence granularity.
- *  • Token-level LCS highlights exactly which words changed.
- *
- * ── Algorithm ────────────────────────────────────────────────────────────────
- * LCS (Longest Common Subsequence) finds the longest sequence of tokens that
- * appear in the same relative order in both strings, without requiring
- * contiguity. Every token not in the LCS is either added or removed.
- *
- * Step 1 — Build DP table:
- *   dp[i][j] = LCS length of A[0..i-1] and B[0..j-1]
- *   if A[i-1] === B[j-1]: dp[i][j] = dp[i-1][j-1] + 1
- *   else:                  dp[i][j] = max(dp[i-1][j], dp[i][j-1])
- *
- * Step 2 — Backtrack from dp[m][n] to reconstruct which tokens are common,
- *   added, or removed.
- *
- * ── Complexity ───────────────────────────────────────────────────────────────
- *   Time:  O(m × n)   — filling the DP table
- *   Space: O(m × n)   — storing the matrix
- *           Can be reduced to O(min(m,n)) with Hirschberg's algorithm
- *   Recon: O(m + n)   — backtracking
- *
- * ── Comparison with alternatives ─────────────────────────────────────────────
- *
- *  Myers Diff:
- *    - Optimal for line-level code diffs. O((m+n)·D) time where D = edit dist.
- *    - Excellent for sparse diffs (few changes). Complex to implement correctly.
- *    - Designed for line-based comparison; less suited for token-level prose.
- *
- *  Naive comparison:
- *    - Scan token by token; fails on any insertion/deletion (no alignment).
- *    - O(n²) in worst case. Not viable for meaningful diffs.
- *
- *  Line-based diffing:
- *    - Splits text on '\n'. AI outputs rarely have meaningful line breaks.
- *    - One changed word = full line marked as changed. Too coarse.
- *
- *  LCS wins for moderate AI outputs (< 2000 tokens each) because:
- *    - Predictable O(m×n) performance — no degenerate cases.
- *    - Correct word-level alignment even for rephrased sentences.
- *    - Simple backtracking produces clean added/removed classification.
- *    - No external dependencies needed.
- */
-
 import { tokenize } from './tokenizer'
 import type { DiffToken, DiffResult } from '../types'
 
-/**
+/*
  * Build the LCS dynamic-programming matrix.
- * Using Uint16Array per row keeps memory compact and cache-friendly.
  */
 function buildLCSMatrix(a: string[], b: string[]): Uint16Array[] {
   const m = a.length

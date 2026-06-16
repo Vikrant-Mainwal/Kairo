@@ -51,7 +51,7 @@ export interface UseStreamingReturn extends StreamState {
 /**
  * useStreaming — core streaming hook.
  *
- * Manages the full lifecycle of an Anthropic SSE stream:
+ * Manages the full lifecycle of an SSE stream:
  *  1. Opens a fetch with stream: true
  *  2. Reads ReadableStream chunks via getReader()
  *  3. Decodes SSE lines and extracts delta.text
@@ -63,9 +63,6 @@ export function useStreaming(): UseStreamingReturn {
   const abortRef = useRef<AbortController | null>(null);
   const lastPromptRef = useRef("");
   const metricsHook = useMetrics();
-  const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY as string;
-
-  console.log(import.meta.env.VITE_GROQ_API_KEY);
 
   const stream = useCallback(
     async (prompt: string, options: UseStreamingOptions): Promise<string> => {
@@ -81,15 +78,15 @@ export function useStreaming(): UseStreamingReturn {
 
       try {
         const response = await fetch(
-          "https://api.groq.com/openai/v1/chat/completions",
+          `${import.meta.env.BASE_URL}/chat`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${GROQ_API_KEY}`,
             },
             signal: controller.signal,
             body: JSON.stringify({
+              prompt,
               model: options.model,
               max_tokens: 1024,
               stream: true,
@@ -130,8 +127,12 @@ export function useStreaming(): UseStreamingReturn {
 
           for (const line of lines) {
             if (!line.startsWith("data: ")) continue;
+            
             const data = line.slice(6).trim();
-            if (data === "[DONE]") continue;
+
+            if (data === "[DONE]") {
+              continue;
+            }
 
             try {
               const json = JSON.parse(data) as {
